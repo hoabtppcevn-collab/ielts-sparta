@@ -574,138 +574,101 @@
   </section>
 
   <!-- ==========================================================================
-       SECTION 4 — COMPARISON (SO SÁNH CÁC HÌNH THỨC THI THỬ)
+       SECTION 4 — COMPARISON (99K BẠN NHẬN ĐƯỢC GÌ?)
        ========================================================================== -->
   <section class="comparison-section" id="comparisonSection">
     <div class="container">
-      <div class="section-header" style="margin-bottom: 50px;">
+      <div class="section-header" style="margin-bottom: 36px;">
         <div class="badge-pill-tech" style="margin-bottom: 14px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           BẢNG SO SÁNH MINH BẠCH
         </div>
         <h2 class="section-title dark-text">
-          So sánh <span class="title-accent-orange">các hình thức thi thử</span>
+          <span class="title-accent-orange">99K</span> bạn nhận được gì?
         </h2>
         <p class="section-subtitle dark-sub">
-          Minh bạch về chi phí, tốc độ trả bài và trải nghiệm làm bài thực tế.
+          So sánh nhanh để biết gói thi thử này có phù hợp với bạn hay không.
         </p>
       </div>
 
-      <div class="comparison-cards-grid">
-        <!-- Card 1: Giáo viên truyền thống -->
-        <div class="comp-card comp-card-side">
-          <div class="comp-card-header-compact">
-            <div class="comp-icon-box comp-icon-red" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F04438" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            </div>
-            <h3 class="comp-card-title">Chấm thủ công</h3>
-            <p class="comp-card-desc">Chấm trên giấy hoặc file Word</p>
-            <div class="comp-cost-pill cost-high">300K - 500K / lần</div>
-          </div>
-          
-          <div class="comp-divider"></div>
+      <!-- Mobile Scroll Hint -->
+      <div class="comp-scroll-hint" aria-hidden="true">
+        <span>← Vuốt ngang để xem so sánh →</span>
+      </div>
 
-          <ul class="comp-list">
-            <li>
-              <span class="comp-badge-cross" aria-hidden="true">✕</span>
-              <span>Chờ kết quả từ 3–5 ngày</span>
-            </li>
-            <li>
-              <span class="comp-badge-cross" aria-hidden="true">✕</span>
-              <span>Điểm số theo cảm tính người chấm</span>
-            </li>
-            <li>
-              <span class="comp-badge-cross" aria-hidden="true">✕</span>
-              <span>Không có giao diện thi trên máy</span>
-            </li>
-            <li>
-              <span class="comp-badge-cross" aria-hidden="true">✕</span>
-              <span>Chi phí cao, khó thi thường xuyên</span>
-            </li>
-          </ul>
+      <!-- Comparison Table Card -->
+      <div class="comp-table-card">
+        <div class="comp-table-scroll">
+          <table class="comp-table" aria-label="Bảng so sánh 99K bạn nhận được gì">
+            <thead>
+              <tr>
+                <th class="col-criteria" scope="col">Tiêu chí</th>
+                <th class="col-option" scope="col">Web miễn phí</th>
+                <th class="col-option" scope="col">Chấm thủ công</th>
+                <th class="col-option col-sparta" scope="col">
+                  <div class="sparta-header-wrap">
+                    <img src="assets/sparta-logo.png" alt="Sparta Logo" class="sparta-header-logo" width="22" height="22">
+                    <span class="sparta-header-title">IELTS Sparta</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th class="row-label" scope="row">Đủ 4 kỹ năng</th>
+                <td class="cell-neutral">Thường không</td>
+                <td class="cell-positive">
+                  <span class="cell-check">✓</span> Có
+                </td>
+                <td class="cell-sparta cell-positive-sparta">
+                  <span class="cell-check-sparta">✓</span> Có
+                </td>
+              </tr>
+              <tr>
+                <th class="row-label" scope="row">Writing &amp; Speaking có feedback</th>
+                <td class="cell-neutral">Thường không</td>
+                <td class="cell-positive">
+                  <span class="cell-check">✓</span> Có
+                </td>
+                <td class="cell-sparta cell-positive-sparta">
+                  <span class="cell-check-sparta">✓</span> Có
+                </td>
+              </tr>
+              <tr>
+                <th class="row-label" scope="row">Trải nghiệm trên máy</th>
+                <td class="cell-neutral">Tùy nền tảng</td>
+                <td class="cell-neutral">Không nhất thiết</td>
+                <td class="cell-sparta cell-positive-sparta">
+                  <span class="cell-check-sparta">✓</span> Có
+                </td>
+              </tr>
+              <tr>
+                <th class="row-label" scope="row">Thời gian nhận kết quả</th>
+                <td class="cell-neutral">Tùy nền tảng</td>
+                <td class="cell-neutral">Thường lâu hơn</td>
+                <td class="cell-sparta cell-fast-sparta">
+                  Khoảng 30 giây
+                </td>
+              </tr>
+              <tr class="row-price">
+                <th class="row-label" scope="row">Chi phí</th>
+                <td class="cell-neutral cell-price-neutral">0đ</td>
+                <td class="cell-neutral cell-price-neutral">Tùy nơi</td>
+                <td class="cell-sparta cell-price-sparta">
+                  <span class="sparta-price-pill">99K/lượt</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <!-- Card 2: Ielts Sparta (Featured / Highlighted) -->
-        <div class="comp-card comp-card-featured">
-          <div class="comp-best-badge">★ TỐI ƯU NHẤT</div>
-          <div class="comp-card-header-compact">
-            <div class="comp-icon-box comp-icon-sparta" aria-hidden="true">
-              <img src="assets/sparta-logo.png" alt="Sparta Logo" class="comp-sparta-logo" width="28" height="28">
-            </div>
-            <h3 class="comp-card-title comp-sparta-title">IELTS Sparta</h3>
-            <p class="comp-card-desc">Thi thử 4 kỹ năng trên máy với AI</p>
-
-            <div class="comp-price-banner">
-              <div class="comp-price-left">
-                <span class="comp-price-num">99.000đ</span><span class="comp-price-sub">/lượt thi</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="comp-divider comp-divider-sparta"></div>
-
-          <ul class="comp-list comp-list-sparta">
-            <li>
-              <span class="comp-badge-check" aria-hidden="true">✓</span>
-              <span>Trả kết quả & band sau 30 giây</span>
-            </li>
-            <li>
-              <span class="comp-badge-check" aria-hidden="true">✓</span>
-              <span>Chấm chuẩn 4 tiêu chí khảo thí IELTS</span>
-            </li>
-            <li>
-              <span class="comp-badge-check" aria-hidden="true">✓</span>
-              <span>Chuẩn 100% phòng thi thật trên máy</span>
-            </li>
-            <li>
-              <span class="comp-badge-check" aria-hidden="true">✓</span>
-              <span>Báo cáo chi tiết & gợi ý sửa bài</span>
-            </li>
-            <li>
-              <span class="comp-badge-check" aria-hidden="true">✓</span>
-              <span>Chỉ 99K trọn gói cả 4 kỹ năng</span>
-            </li>
-          </ul>
-
-          <div class="comp-card-cta-wrap">
-            <a href="#leadFormCard" class="btn-primary comp-btn-cta">
-              <span>ĐĂNG KÝ PHÒNG THI 99K</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Card 3: Các công cụ web miễn phí -->
-        <div class="comp-card comp-card-side">
-          <div class="comp-card-header-compact">
-            <div class="comp-icon-box comp-icon-red" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F04438" stroke-width="2"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><rect x="4" y="8" width="16" height="12" rx="4"/></svg>
-            </div>
-            <h3 class="comp-card-title">Web miễn phí</h3>
-            <p class="comp-card-desc">Làm đề trực tuyến rời rạc</p>
-            <div class="comp-cost-pill cost-neutral">Thiếu chuẩn hóa</div>
-          </div>
-
-          <div class="comp-divider"></div>
-
-          <ul class="comp-list">
-            <li>
-              <span class="comp-badge-cross" aria-hidden="true">✕</span>
-              <span>Chỉ có Nghe - Đọc, không chấm Nói - Viết</span>
-            </li>
-            <li>
-              <span class="comp-badge-cross" aria-hidden="true">✕</span>
-              <span>Giao diện không chuẩn phòng thi thật</span>
-            </li>
-            <li>
-              <span class="comp-badge-cross" aria-hidden="true">✕</span>
-              <span>Không có hướng dẫn sửa lỗi ngữ pháp</span>
-            </li>
-            <li>
-              <span class="comp-badge-cross" aria-hidden="true">✕</span>
-              <span>Quảng cáo gây mất tập trung làm bài</span>
-            </li>
-          </ul>
-        </div>
+      <!-- CTA Button -->
+      <div class="comp-cta-wrap">
+        <a href="#leadFormCard" class="btn-primary btn-magic-beam comp-cta-btn">
+          <span>Thi thử 4 kỹ năng</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
       </div>
     </div>
   </section>
