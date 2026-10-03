@@ -80,13 +80,13 @@
   --border-focus: var(--color-soft-tech-blue);
 
   /* --------------------------------------------------------------------------
-     DIFFUSE DAYLIGHT AMBIENT SHADOWS (Matching Reference 3D Panels)
+     FLAT CLEAN DESIGN (Zero Drop Shadows)
      -------------------------------------------------------------------------- */
-  --shadow-subtle: 0 4px 16px rgba(7, 27, 61, 0.04);
-  --shadow-card: 0 16px 38px rgba(7, 27, 61, 0.05), 0 2px 8px rgba(7, 27, 61, 0.02);
-  --shadow-card-hover: 0 22px 48px rgba(7, 27, 61, 0.09), 0 4px 12px rgba(7, 27, 61, 0.03);
-  --shadow-btn: 0 2px 6px rgba(255, 90, 0, 0.15);
-  --shadow-btn-hover: 0 4px 10px rgba(255, 90, 0, 0.20);
+  --shadow-subtle: none;
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --shadow-btn: none;
+  --shadow-btn-hover: none;
 
   /* --------------------------------------------------------------------------
      GEOMETRY & RADIUS (Structured B2B EdTech - 14px to 22px)
@@ -104,10 +104,13 @@
 }
 
 /* ==========================================================================
-   BASE RESETS & GLOBAL STYLES
+   BASE RESETS & GLOBAL STYLES (Zero Drop Shadows Enforced)
    ========================================================================== */
 *, *::before, *::after {
   box-sizing: border-box;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
   margin: 0;
   padding: 0;
 }
@@ -545,17 +548,17 @@ p {
   font-weight: 700;
   letter-spacing: 0.1px;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgba(255, 90, 0, 0.20) !important;
+  box-shadow: none !important;
   border: none;
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .nav-cta:hover {
   background: #E55200 !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(255, 90, 0, 0.26) !important;
+  box-shadow: none !important;
 }
 
 .nav-cta:active {
@@ -829,7 +832,7 @@ p {
 .holo-card:hover {
   animation-play-state: paused;
   transform: translateY(-4px) !important;
-  box-shadow: 0 20px 44px rgba(7, 27, 61, 0.10) !important;
+  box-shadow: none !important;
   border-color: #CBDDF0 !important;
   z-index: 10;
 }
@@ -1052,7 +1055,7 @@ p {
   padding: 68px 0 80px 0;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F6FAFE 50%, #EEF5FD 100%);
+  background: #FFFFFF;
   min-height: 560px;
   display: flex;
   align-items: center;
@@ -1110,11 +1113,8 @@ p {
 }
 
 .hero-title {
-  font-size: clamp(36px, 4.4vw, 64px);
   font-weight: 800;
-  line-height: 1.15;
   color: var(--color-primary-navy) !important;
-  letter-spacing: -0.025em;
   text-transform: uppercase;
   margin-bottom: 0;
   white-space: normal;
@@ -1122,10 +1122,17 @@ p {
 
 .hero-title-line {
   display: block;
+  font-size: clamp(28px, 3.5vw, 50px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .hero-title .title-accent-orange {
   display: block;
+  font-size: clamp(20px, 2.5vw, 36px);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  margin-top: 8px;
 }
 
 .title-accent-orange {
@@ -1248,12 +1255,10 @@ p {
 @keyframes pulseBlink99k {
   0%, 100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 0 rgba(255, 90, 0, 0));
     opacity: 1;
   }
   50% {
     transform: scale(1.08);
-    filter: drop-shadow(0 0 10px rgba(255, 90, 0, 0.65));
     opacity: 0.88;
   }
 }
@@ -1809,23 +1814,13 @@ p {
   padding: 92px 0 96px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #EEF5FD 0%, #F8FAFD 45%, #FFFFFF 100%);
+  background: #FFFFFF;
   border-top: none;
   border-bottom: none;
 }
 
 .product-experience-section::before {
-  content: "";
-  position: absolute;
-  top: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 1200px;
-  height: 380px;
-  background: radial-gradient(ellipse 65% 50% at 50% 0%, rgba(47, 107, 255, 0.06) 0%, rgba(255, 90, 0, 0.03) 45%, transparent 75%);
-  pointer-events: none;
-  z-index: 0;
+  display: none;
 }
 
 .product-experience-section::after {
@@ -2186,17 +2181,13 @@ p {
   padding: 88px 0;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F4F8FD 45%, #EDF4FC 100%);
+  background: #FFFFFF;
   border-top: none;
   border-bottom: none;
 }
 
 .ai-lab-glow-bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
+  display: none !important;
 }
 
 .ai-lab-glow-bg::before {
@@ -2834,7 +2825,7 @@ p {
    ========================================================================== */
 .comparison-section {
   padding: 56px 0 60px;
-  background: linear-gradient(180deg, #EDF4FC 0%, #F7FAFE 40%, #FFFFFF 100%);
+  background: #FFFFFF;
   border-top: none;
   border-bottom: none;
   position: relative;
@@ -3078,7 +3069,7 @@ p {
    ========================================================================== */
 .testimonials-section {
   padding: 88px 0 92px;
-  background: linear-gradient(180deg, #EBF3FC 0%, #E4EEFC 45%, #EBF3FC 100%);
+  background: #F4F8FD;
   border-top: none;
   border-bottom: none;
   color: var(--color-gray-navy);
@@ -3087,14 +3078,7 @@ p {
 }
 
 .testimonials-section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: 
-    radial-gradient(circle at 10% 40%, rgba(56, 189, 248, 0.1) 0%, transparent 55%),
-    radial-gradient(circle at 90% 60%, rgba(47, 107, 255, 0.08) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
+  display: none;
 }
 
 .testimonials-carousel-wrapper {
@@ -3343,7 +3327,7 @@ p {
    ========================================================================== */
 .faq-streamlined-section {
   padding: 88px 0;
-  background: linear-gradient(180deg, #EAF2FB 0%, #F6FAFE 45%, #FFFFFF 100%);
+  background: #FFFFFF;
   border-top: none;
   border-bottom: none;
   color: var(--color-gray-navy);
@@ -3440,7 +3424,7 @@ p {
   padding: 88px 0;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F4F8FD 50%, #EDF4FC 100%);
+  background: #FFFFFF;
   color: var(--color-gray-navy);
   border-top: 1px solid #EAF1F8;
 }
@@ -4756,8 +4740,8 @@ p {
   position: relative !important;
   overflow: hidden !important;
   isolation: isolate;
-  box-shadow: 0 4px 18px rgba(255, 90, 0, 0.38), 0 0 0 1px rgba(255, 120, 0, 0.3) !important;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease !important;
+  box-shadow: none !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .btn-magic-beam::before {
@@ -4780,12 +4764,13 @@ p {
 }
 
 .btn-magic-beam:hover {
-  transform: translateY(-2.5px) scale(1.015) !important;
-  box-shadow: 0 8px 28px rgba(255, 90, 0, 0.55), 0 0 0 1.5px rgba(255, 160, 50, 0.7) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: none !important;
 }
 
 .btn-magic-beam:active {
-  transform: translateY(0) scale(0.99) !important;
+  transform: translateY(0) !important;
+  box-shadow: none !important;
 }
 
 @keyframes magic-shimmer-sweep {
@@ -5490,7 +5475,7 @@ p {
    ========================================================================== */
 .sparta-pricing-section {
   padding: 96px 0;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F7FAFF 50%, #FFFFFF 100%);
+  background: #FFFFFF;
   position: relative;
   border-bottom: 1px solid #EDF4FB;
 }
@@ -5773,4 +5758,65 @@ p {
     align-items: flex-start;
     gap: 12px;
   }
+}
+
+/* ==========================================================================
+   FLAT CLEAN DESIGN (ZERO SHADOWS ON ALL TABLES, CARDS, COLUMNS, BUTTONS)
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+button,
+a,
+input,
+select,
+textarea,
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-magic-beam,
+.btn-price-card,
+.comp-cta-btn,
+.nav-cta,
+.sticky-cta-btn,
+.lead-form-card,
+.software-mockup-window,
+.product-point-card,
+.ai-lab-panel,
+.comp-table-card,
+.sparta-price-card,
+.sparta-testimonial-card,
+.faq-item,
+.faq-item-clean,
+.final-cta-card-gradient,
+.badge-pill-tech,
+.price-pill-tag,
+.sparta-price-pill,
+.cost-high,
+.cost-neutral,
+.sticky-bottom-cta {
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+button:hover,
+a:hover,
+.btn:hover,
+.btn-primary:hover,
+.btn-magic-beam:hover,
+.btn-price-card:hover,
+.comp-cta-btn:hover,
+.nav-cta:hover,
+.sticky-cta-btn:hover,
+.lead-form-card:hover,
+.product-point-card:hover,
+.ai-lab-panel:hover,
+.sparta-price-card:hover,
+.sparta-testimonial-card:hover {
+  box-shadow: none !important;
+  filter: none !important;
 }
