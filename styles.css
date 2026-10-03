@@ -1116,23 +1116,23 @@ p {
   font-weight: 800;
   color: var(--color-primary-navy) !important;
   text-transform: uppercase;
-  margin-bottom: 0;
+  margin-bottom: 20px;
   white-space: normal;
 }
 
 .hero-title-line {
   display: block;
-  font-size: clamp(28px, 3.5vw, 50px);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-size: clamp(34px, 4.3vw, 58px);
+  line-height: 1.12;
+  letter-spacing: -0.022em;
 }
 
 .hero-title .title-accent-orange {
   display: block;
-  font-size: clamp(20px, 2.5vw, 36px);
-  line-height: 1.25;
+  font-size: clamp(24px, 3.0vw, 41px);
+  line-height: 1.22;
   letter-spacing: -0.015em;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .title-accent-orange {
