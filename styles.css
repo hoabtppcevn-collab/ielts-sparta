@@ -110,7 +110,6 @@
   box-sizing: border-box;
   box-shadow: none !important;
   text-shadow: none !important;
-}
   margin: 0;
   padding: 0;
 }
@@ -5823,4 +5822,227 @@ a:hover,
 .sparta-testimonial-card:hover {
   box-shadow: none !important;
   filter: none !important;
+}
+
+/* ==========================================================================
+   SPARTA EDU CRO & BRAND UPGRADE ENHANCEMENTS
+   ========================================================================== */
+
+/* 1. Header Hotline Link */
+.nav-hotline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-primary-navy);
+  padding: 8px 14px;
+  border-radius: var(--radius-btn, 12px);
+  border: 1.5px solid var(--color-cool-gray-border, #E2EDF8);
+  background: #FFFFFF;
+  transition: var(--transition, all 0.2s ease);
+  text-decoration: none;
+}
+
+.nav-hotline-link svg {
+  color: var(--color-bright-orange);
+  flex-shrink: 0;
+}
+
+.nav-hotline-link:hover {
+  border-color: var(--color-bright-orange);
+  color: var(--color-bright-orange);
+  background: #FFFBF8;
+}
+
+@media (max-width: 991px) {
+  .nav-hotline-link {
+    display: none;
+  }
+}
+
+/* 2. Micro Signature Brand Badge (Hero Form) */
+.form-brand-badge-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #F7FAFF;
+  border: 1.5px solid #E2EDF8;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.badge-score-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-mini-ring {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2.5px solid var(--color-bright-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  flex-shrink: 0;
+}
+
+.badge-mini-score {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-primary-navy);
+  line-height: 1;
+}
+
+.badge-score-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.badge-score-title {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--color-primary-navy);
+  line-height: 1.15;
+}
+
+.badge-score-status {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--color-gray-navy-light);
+  line-height: 1.15;
+}
+
+.badge-skills-pills {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.badge-skill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--color-primary-navy);
+  background: #FFFFFF;
+  border: 1px solid #E2EDF8;
+  border-radius: 6px;
+  line-height: 1.2;
+}
+
+.badge-skill-tag svg {
+  color: var(--color-soft-tech-blue);
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .form-brand-badge-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* 3. Triple Risk-Reversal Master Guarantee */
+.pricing-guarantee-master {
+  margin-top: 48px;
+  padding: 28px 26px;
+  background: #F7FAFF;
+  border: 1.5px solid #E2EDF8;
+  border-radius: 20px;
+}
+
+.guarantee-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--color-primary-navy);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.guarantee-header-badge svg {
+  color: var(--color-bright-orange);
+  flex-shrink: 0;
+}
+
+.pricing-trust-guarantee-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.trust-guarantee-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #FFFFFF;
+  border: 1.5px solid #E2EDF8;
+  border-radius: 14px;
+  padding: 18px 16px;
+  transition: var(--transition, all 0.2s ease);
+}
+
+.trust-guarantee-card:hover {
+  border-color: #CBDCEB;
+}
+
+.guarantee-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.guarantee-icon-box.icon-green {
+  background: #ECFDF5;
+  color: #10B981;
+}
+
+.guarantee-icon-box.icon-blue {
+  background: #EFF6FF;
+  color: #2F6BFF;
+}
+
+.guarantee-icon-box.icon-orange {
+  background: #FFF7ED;
+  color: #FF5A00;
+}
+
+.guarantee-text h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-primary-navy);
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+.guarantee-text p {
+  font-size: 13px;
+  line-height: 1.48;
+  color: var(--color-gray-navy);
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .pricing-trust-guarantee-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
