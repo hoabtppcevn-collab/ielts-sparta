@@ -13,6 +13,13 @@
   'use strict';
 
   // ==========================================================================
+  // 0. CONFIGURATION
+  // ==========================================================================
+  // ⚠️ THAY URL BÊN DƯỚI BẰNG ENDPOINT GOOGLE APPS SCRIPT CỦA BẠN
+  // Hướng dẫn deploy: xem file google_apps_script.js
+  const FORM_ENDPOINT = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+  // ==========================================================================
   // 1. CONVERSION TRACKING EVENT BUS
   // ==========================================================================
   const ConversionTracker = {
@@ -47,6 +54,7 @@
   // Dispatch initial landing view
   document.addEventListener('DOMContentLoaded', () => {
     ConversionTracker.trackOnce('landing_view', { offer: 'MockTest_99K_4Skills' });
+    initHeaderNavigation();
     initForm();
     initFAQ();
     initScrollTracking();
@@ -54,6 +62,11 @@
     initSmoothScrollCTAs();
     initTestimonialCarousel();
     initCountdownTimer();
+    initSoftwareScreensTabs();
+    initFormCountdownTimer();
+    initNumberTicker();
+    initAiSimulator();
+    initPricingPackages();
   });
 
   // ==========================================================================
@@ -63,21 +76,20 @@
     const form = document.getElementById('ieltsRegistrationForm');
     const nameInput = document.getElementById('fullNameInput');
     const phoneInput = document.getElementById('phoneInput');
-    const emailInput = document.getElementById('emailInput');
-    const requirementInput = document.getElementById('requirementInput');
     const submitBtn = document.getElementById('formSubmitBtn');
 
     const nameError = document.getElementById('nameError');
     const phoneError = document.getElementById('phoneError');
-    const emailError = document.getElementById('emailError');
 
     const modalOverlay = document.getElementById('successModalOverlay');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
 
+    if (!form || !nameInput || !phoneInput) return;
+
     let formStarted = false;
 
     // Track lead_form_start on first interaction
-    [nameInput, phoneInput, emailInput, requirementInput].forEach(field => {
+    [nameInput, phoneInput].forEach(field => {
       if (!field) return;
       field.addEventListener('focus', () => {
         if (!formStarted) {
@@ -94,12 +106,10 @@
       // Accepts Vietnam phone standard: 10 digits starting with 0
       return /^(0)(3|5|7|8|9|2)[0-9]{8}$/.test(cleanPhone);
     };
-    const validateEmail = (val) => {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
-    };
 
     // Helper: show/clear inline error
     function setError(inputElem, errorElem, isVisible) {
+      if (!inputElem || !errorElem) return;
       if (isVisible) {
         inputElem.classList.add('error');
         errorElem.classList.add('visible');
@@ -122,29 +132,49 @@
       }
     });
 
-    emailInput.addEventListener('input', () => {
-      if (emailInput.classList.contains('error')) {
-        setError(emailInput, emailError, !validateEmail(emailInput.value));
-      }
+    // Package selector pills in hero form
+    const pkgPills = document.querySelectorAll('.pkg-pill');
+    const selectedPkgInput = document.getElementById('selectedPackageInput');
+    const selectedPriceInput = document.getElementById('selectedPriceInput');
+
+    function selectFormPackage(pkgKey) {
+      pkgPills.forEach(pill => {
+        const isMatch = pill.getAttribute('data-pkg') === pkgKey;
+        pill.classList.toggle('active', isMatch);
+        if (isMatch) {
+          const price = pill.getAttribute('data-price') || '99000';
+          const label = pill.getAttribute('data-label') || 'BẮT ĐẦU THI NGAY';
+          if (selectedPkgInput) selectedPkgInput.value = pkgKey;
+          if (selectedPriceInput) selectedPriceInput.value = price;
+          if (submitBtn) {
+            const btnSpan = submitBtn.querySelector('span');
+            if (btnSpan) btnSpan.textContent = label;
+          }
+        }
+      });
+    }
+
+    pkgPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const pkg = pill.getAttribute('data-pkg');
+        selectFormPackage(pkg);
+        ConversionTracker.track('package_pill_select', { package: pkg });
+      });
     });
 
-    // Form submission
+    // Form submission — REAL BACKEND via Google Apps Script
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const isNameValid = validateName(nameInput.value);
       const isPhoneValid = validatePhone(phoneInput.value);
-      const isEmailValid = validateEmail(emailInput.value);
 
       setError(nameInput, nameError, !isNameValid);
       setError(phoneInput, phoneError, !isPhoneValid);
-      setError(emailInput, emailError, !isEmailValid);
 
-      if (!isNameValid || !isPhoneValid || !isEmailValid) {
-        // Focus first invalid element
+      if (!isNameValid || !isPhoneValid) {
         if (!isNameValid) nameInput.focus();
-        else if (!isPhoneValid) phoneInput.focus();
-        else emailInput.focus();
+        else phoneInput.focus();
         return;
       }
 
@@ -153,41 +183,169 @@
       const originalBtnHTML = submitBtn.innerHTML;
       submitBtn.innerHTML = `<span>Đang gửi thông tin...</span>`;
 
+      // Capture UTM params and package choice
+      const urlParams = new URLSearchParams(window.location.search);
+      const cleanPhone = phoneInput.value.trim().replace(/\s+/g, '').replace(/[-.]/g, '');
+      const chosenPkg = selectedPkgInput ? selectedPkgInput.value : 'mock99';
+      const chosenPrice = parseInt(selectedPriceInput ? selectedPriceInput.value : '99000', 10);
+      const pkgTitles = {
+        mock99: 'Gói Thi Thử 99K',
+        save400: 'Gói Tiết Kiệm 400K / 30 ngày',
+        hard850: 'Gói Chăm Chỉ 850K / 30 ngày'
+      };
+      const chosenTitle = pkgTitles[chosenPkg] || 'Gói Thi Thử 99K';
+
+      const leadData = {
+        fullName: nameInput.value.trim(),
+        phone: phoneInput.value.trim(),
+        cleanPhone: cleanPhone,
+        package: chosenPkg,
+        packageTitle: chosenTitle,
+        packagePrice: chosenPrice,
+        utmSource: urlParams.get('utm_source') || '',
+        utmMedium: urlParams.get('utm_medium') || '',
+        utmCampaign: urlParams.get('utm_campaign') || '',
+        pageUrl: window.location.href
+      };
+
+      // Helper to configure dynamic VietQR modal
+      function setupVietQRModal(phone, price = 99000, pkgTitle = 'Gói Thi Thử 99K') {
+        const transferNote = `SPARTA ${phone}`;
+        const vietqrImg = document.getElementById('vietqrImg');
+        const transferNoteText = document.getElementById('transferNoteText');
+        const modalPriceVal = document.getElementById('modalPriceVal');
+        const modalSubDesc = document.getElementById('modalSubDesc');
+
+        if (vietqrImg) {
+          vietqrImg.src = `https://img.vietqr.io/image/970422-0936488338-compact2.png?amount=${price}&addInfo=${encodeURIComponent(transferNote)}&accountName=SPARTA%20EDU`;
+        }
+        if (transferNoteText) {
+          transferNoteText.textContent = transferNote;
+        }
+        if (modalPriceVal) {
+          modalPriceVal.textContent = price.toLocaleString('vi-VN') + 'đ';
+        }
+        if (modalSubDesc) {
+          modalSubDesc.textContent = `Quét mã VietQR để kích hoạt ${pkgTitle} và nhận tài khoản ngay`;
+        }
+      }
+
       // Track checkout start
       ConversionTracker.track('checkout_start', {
-        item_name: 'IELTS Sparta Full Mock Test 4 Ky Nang',
-        price: 99000,
+        item_name: leadData.packageTitle,
+        price: leadData.packagePrice,
         currency: 'VND'
       });
 
-      // Simulate network request
-      setTimeout(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnHTML;
+      // Send data to backend
+      const sendToBackend = (FORM_ENDPOINT && FORM_ENDPOINT !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE')
+        ? fetch(FORM_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(leadData)
+          }).then(res => res.json())
+        : new Promise(resolve => setTimeout(() => resolve({ status: 'success' }), 750));
 
-        // Fire conversion events
-        ConversionTracker.track('lead_form_submit', {
-          fullName: nameInput.value.trim(),
-          phone: phoneInput.value.trim(),
-          email: emailInput.value.trim(),
-          offer: '99K'
+      sendToBackend
+        .then(result => {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHTML;
+
+          // Fire conversion events
+          ConversionTracker.track('lead_form_submit', {
+            fullName: leadData.fullName,
+            phone: leadData.phone,
+            package: leadData.package,
+            offer: leadData.packagePrice + 'VND'
+          });
+
+          ConversionTracker.track('purchase_success', {
+            transaction_id: 'SPARTA_' + Date.now(),
+            value: leadData.packagePrice,
+            currency: 'VND',
+            package: leadData.package
+          });
+
+          // Set up dynamic VietQR with phone, price & open modal
+          setupVietQRModal(leadData.cleanPhone, leadData.packagePrice, leadData.packageTitle);
+          form.reset();
+          modalOverlay.classList.add('open');
+        })
+        .catch(err => {
+          console.error('[IELTS Sparta] Form submission error:', err);
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHTML;
+
+          // Still show modal + track even on network error
+          ConversionTracker.track('lead_form_submit', {
+            fullName: leadData.fullName,
+            phone: leadData.phone,
+            package: leadData.package,
+            offer: leadData.packagePrice + 'VND',
+            error: true
+          });
+          setupVietQRModal(leadData.cleanPhone, leadData.packagePrice, leadData.packageTitle);
+          form.reset();
+          modalOverlay.classList.add('open');
         });
-
-        ConversionTracker.track('purchase_success', {
-          transaction_id: 'SPARTA_' + Date.now(),
-          value: 99000,
-          currency: 'VND'
-        });
-
-        // Reset form & show modal
-        form.reset();
-        modalOverlay.classList.add('open');
-      }, 750);
     });
+
+    // Copy to clipboard helper
+    function copyTextToClipboard(text, btnElem, defaultLabel = 'Sao chép') {
+      if (!btnElem) return;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          btnElem.textContent = '✓ Đã chép';
+          setTimeout(() => { btnElem.textContent = defaultLabel; }, 2000);
+        }).catch(() => fallbackCopy(text, btnElem, defaultLabel));
+      } else {
+        fallbackCopy(text, btnElem, defaultLabel);
+      }
+    }
+
+    function fallbackCopy(text, btnElem, defaultLabel) {
+      try {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = text;
+        tempInput.style.position = 'fixed';
+        tempInput.style.opacity = '0';
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        btnElem.textContent = '✓ Đã chép';
+        setTimeout(() => { btnElem.textContent = defaultLabel; }, 2000);
+      } catch (err) {
+        btnElem.textContent = 'Lỗi';
+        setTimeout(() => { btnElem.textContent = defaultLabel; }, 2000);
+      }
+    }
+
+    // Initialize Copy Buttons in VietQR Modal
+    const copyAccountBtn = document.getElementById('copyAccountBtn');
+    const bankAccountNum = document.getElementById('bankAccountNum');
+    if (copyAccountBtn) {
+      copyAccountBtn.addEventListener('click', () => {
+        const accNum = bankAccountNum ? bankAccountNum.textContent.replace(/\s+/g, '') : '0936488338';
+        copyTextToClipboard(accNum, copyAccountBtn);
+        ConversionTracker.track('vietqr_copy_account');
+      });
+    }
+
+    const copyNoteBtn = document.getElementById('copyNoteBtn');
+    if (copyNoteBtn) {
+      copyNoteBtn.addEventListener('click', () => {
+        const transferNoteText = document.getElementById('transferNoteText');
+        const note = transferNoteText ? transferNoteText.textContent.trim() : 'SPARTA THI THU';
+        copyTextToClipboard(note, copyNoteBtn);
+        ConversionTracker.track('vietqr_copy_note');
+      });
+    }
 
     // Close modal
     if (modalCloseBtn && modalOverlay) {
       modalCloseBtn.addEventListener('click', () => {
+        ConversionTracker.track('vietqr_confirm_paid');
         modalOverlay.classList.remove('open');
       });
 
@@ -365,10 +523,48 @@
     const nextBtn = document.getElementById('testiNextBtn');
     const dotsContainer = document.getElementById('testiCarouselDots');
 
-    if (!trackWrapper || !prevBtn || !nextBtn) return;
+    if (!trackWrapper) return;
 
     const cards = trackWrapper.querySelectorAll('.testimonial-card-clean');
     if (!cards.length) return;
+
+    let currentIndex = 0;
+    let autoPlayInterval = null;
+    let isUserInteracting = false;
+
+    function getCardStep() {
+      const firstCard = cards[0];
+      const track = trackWrapper.querySelector('.testimonials-track');
+      let gap = 24;
+      if (track) {
+        const computed = window.getComputedStyle(track);
+        gap = parseFloat(computed.gap) || 24;
+      }
+      return (firstCard ? firstCard.offsetWidth : 350) + gap;
+    }
+
+    function scrollToCard(index) {
+      currentIndex = Math.max(0, Math.min(index, cards.length - 1));
+      const step = getCardStep();
+      trackWrapper.scrollTo({
+        left: currentIndex * step,
+        behavior: 'smooth'
+      });
+      updateActiveDot();
+    }
+
+    function updateActiveDot() {
+      if (!dotsContainer) return;
+      const dots = dotsContainer.querySelectorAll('.testi-dot');
+      const step = getCardStep();
+      if (step <= 0) return;
+      const activeIndex = Math.min(Math.round(trackWrapper.scrollLeft / step), cards.length - 1);
+      currentIndex = Math.max(0, activeIndex);
+
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentIndex);
+      });
+    }
 
     // Build dots
     if (dotsContainer) {
@@ -380,108 +576,449 @@
         dot.setAttribute('aria-label', `Đi tới đánh giá ${idx + 1}`);
         dot.addEventListener('click', () => {
           scrollToCard(idx);
+          pauseAutoPlayTemporarily();
         });
         dotsContainer.appendChild(dot);
       });
     }
 
-    function getCardStep() {
-      const firstCard = cards[0];
-      return firstCard.offsetWidth + 20; // card width + gap
-    }
-
-    function updateActiveDot() {
-      if (!dotsContainer) return;
-      const dots = dotsContainer.querySelectorAll('.testi-dot');
-      const step = getCardStep();
-      const activeIndex = Math.min(Math.round(trackWrapper.scrollLeft / step), cards.length - 1);
-
-      dots.forEach((dot, idx) => {
-        dot.classList.toggle('active', idx === activeIndex);
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        const target = currentIndex <= 0 ? cards.length - 1 : currentIndex - 1;
+        scrollToCard(target);
+        pauseAutoPlayTemporarily();
       });
     }
 
-    function scrollToCard(index) {
-      const step = getCardStep();
-      trackWrapper.scrollTo({
-        left: index * step,
-        behavior: 'smooth'
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        const target = (currentIndex + 1) % cards.length;
+        scrollToCard(target);
+        pauseAutoPlayTemporarily();
       });
     }
-
-    prevBtn.addEventListener('click', () => {
-      const step = getCardStep();
-      const currentScroll = trackWrapper.scrollLeft;
-      if (currentScroll <= 10) {
-        // Wrap to the last card
-        trackWrapper.scrollTo({
-          left: (cards.length - 1) * step,
-          behavior: 'smooth'
-        });
-      } else {
-        trackWrapper.scrollBy({ left: -step, behavior: 'smooth' });
-      }
-    });
-
-    nextBtn.addEventListener('click', () => {
-      const step = getCardStep();
-      const maxScroll = trackWrapper.scrollWidth - trackWrapper.clientWidth;
-      if (trackWrapper.scrollLeft >= maxScroll - 15) {
-        // Wrap to the first card
-        trackWrapper.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        trackWrapper.scrollBy({ left: step, behavior: 'smooth' });
-      }
-    });
 
     let scrollTimeout;
     trackWrapper.addEventListener('scroll', () => {
       clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(updateActiveDot, 50);
+      scrollTimeout = setTimeout(updateActiveDot, 60);
     }, { passive: true });
+
+    // Clean auto-advance every 6s without continuous drifting
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayInterval = setInterval(() => {
+        if (!isUserInteracting) {
+          const nextIndex = (currentIndex + 1) % cards.length;
+          scrollToCard(nextIndex);
+        }
+      }, 6000);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+    }
+
+    function pauseAutoPlayTemporarily() {
+      isUserInteracting = true;
+      stopAutoPlay();
+      setTimeout(() => {
+        isUserInteracting = false;
+        startAutoPlay();
+      }, 5000);
+    }
+
+    trackWrapper.addEventListener('mouseenter', () => { isUserInteracting = true; });
+    trackWrapper.addEventListener('mouseleave', () => { isUserInteracting = false; });
+    trackWrapper.addEventListener('touchstart', () => { isUserInteracting = true; }, { passive: true });
+    trackWrapper.addEventListener('touchend', () => {
+      setTimeout(() => { isUserInteracting = false; }, 3000);
+    }, { passive: true });
+
+    startAutoPlay();
   }
 
   // ==========================================================================
-  // 8. 15-MINUTE COUNTDOWN TIMER FOR EXCLUSIVE OFFER
+  // 8. REALISTIC SOFTWARE EXAM COUNTDOWN TIMERS (HERO & PRODUCT SECTION)
   // ==========================================================================
   function initCountdownTimer() {
-    const cdDays = document.getElementById('cdDays');
-    const cdHours = document.getElementById('cdHours');
-    const cdMinutes = document.getElementById('cdMinutes');
-    const cdSeconds = document.getElementById('cdSeconds');
+    const heroTimer = document.getElementById('heroSoftwareTimer');
+    const sectionTimer = document.getElementById('softwareExamTimer');
 
-    if (!cdMinutes || !cdSeconds) return;
+    if (heroTimer || sectionTimer) {
+      let remainingSeconds = 32 * 60 + 16;
 
-    const STORAGE_KEY = 'sparta_15m_offer_countdown';
-    let endTime = sessionStorage.getItem(STORAGE_KEY);
+      function updateExamTimer() {
+        if (remainingSeconds > 0) {
+          remainingSeconds--;
+        }
+        const mins = Math.floor(remainingSeconds / 60);
+        const secs = remainingSeconds % 60;
+        const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
-    if (!endTime || isNaN(endTime)) {
-      endTime = Date.now() + 15 * 60 * 1000;
-      sessionStorage.setItem(STORAGE_KEY, endTime);
-    } else {
-      endTime = parseInt(endTime, 10);
-      if (Date.now() > endTime) {
-        endTime = Date.now() + 15 * 60 * 1000;
-        sessionStorage.setItem(STORAGE_KEY, endTime);
+        if (heroTimer) heroTimer.textContent = timeStr;
+        if (sectionTimer) sectionTimer.textContent = timeStr;
+      }
+
+      setInterval(updateExamTimer, 1000);
+    }
+  }
+
+  // ==========================================================================
+  // 9. SOFTWARE SCREENSHOT TABS (LISTENING & WRITING REAL UI)
+  // ==========================================================================
+  function initSoftwareScreensTabs() {
+    const tabButtons = document.querySelectorAll('.software-tab-btn');
+    const slides = document.querySelectorAll('.software-img-slide');
+
+    if (!tabButtons.length || !slides.length) return;
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        if (!targetId) return;
+
+        tabButtons.forEach(b => b.classList.remove('active'));
+        slides.forEach(s => s.classList.remove('active'));
+
+        btn.classList.add('active');
+        const targetSlide = document.getElementById(targetId);
+        if (targetSlide) {
+          targetSlide.classList.add('active');
+          ConversionTracker.track('software_tab_click', { tab: targetId });
+        }
+      });
+    });
+  }
+
+  // ==========================================================================
+  // 10. FORM COUNTDOWN TIMER — PERSISTENT (localStorage)
+  // ==========================================================================
+  function initFormCountdownTimer() {
+    const daysEl = document.getElementById('countdownDays');
+    const hoursEl = document.getElementById('countdownHours');
+    const minsEl = document.getElementById('countdownMinutes');
+    const secsEl = document.getElementById('countdownSeconds');
+
+    const finalDaysEl = document.getElementById('finalCountdownDays');
+    const finalHoursEl = document.getElementById('finalCountdownHours');
+    const finalMinsEl = document.getElementById('finalCountdownMinutes');
+    const finalSecsEl = document.getElementById('finalCountdownSeconds');
+
+    if (!hoursEl && !finalHoursEl) return;
+
+    const COUNTDOWN_KEY = 'sparta_countdown_end_v1';
+    const COUNTDOWN_DURATION = (4 * 3600 + 15 * 60) * 1000; // 4h15m in ms
+
+    // Get or set end time from localStorage
+    let endTime = parseInt(localStorage.getItem(COUNTDOWN_KEY), 10);
+    if (!endTime || isNaN(endTime) || endTime <= Date.now()) {
+      endTime = Date.now() + COUNTDOWN_DURATION;
+      localStorage.setItem(COUNTDOWN_KEY, endTime.toString());
+    }
+
+    function renderCountdown() {
+      const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+
+      if (remaining <= 0) {
+        // Renew countdown for next cycle
+        endTime = Date.now() + COUNTDOWN_DURATION;
+        localStorage.setItem(COUNTDOWN_KEY, endTime.toString());
+      }
+
+      const d = Math.floor(remaining / 86400);
+      const h = Math.floor((remaining % 86400) / 3600);
+      const m = Math.floor((remaining % 3600) / 60);
+      const s = remaining % 60;
+
+      const dStr = String(d).padStart(2, '0');
+      const hStr = String(h).padStart(2, '0');
+      const mStr = String(m).padStart(2, '0');
+      const sStr = String(s).padStart(2, '0');
+
+      if (daysEl) daysEl.textContent = dStr;
+      if (hoursEl) hoursEl.textContent = hStr;
+      if (minsEl) minsEl.textContent = mStr;
+      if (secsEl) secsEl.textContent = sStr;
+
+      if (finalDaysEl) finalDaysEl.textContent = dStr;
+      if (finalHoursEl) finalHoursEl.textContent = hStr;
+      if (finalMinsEl) finalMinsEl.textContent = mStr;
+      if (finalSecsEl) finalSecsEl.textContent = sStr;
+    }
+
+    renderCountdown();
+    setInterval(renderCountdown, 1000);
+  }
+
+  // ==========================================================================
+  // 11. TOP NAVIGATION / HEADER LOGIC (SPARTA EDU)
+  // ==========================================================================
+  function initHeaderNavigation() {
+    const header = document.getElementById('mainHeader');
+    const mobileToggle = document.getElementById('navMobileToggle');
+    const mobileDrawer = document.getElementById('mobileNavDrawer');
+    const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+    const sections = [
+      { id: 'productExperienceSection', linkSelector: 'a[href="#productExperienceSection"]' },
+      { id: 'aiScoringSection', linkSelector: 'a[href="#aiScoringSection"]' },
+      { id: 'comparisonSection', linkSelector: 'a[href="#comparisonSection"]' },
+      { id: 'pricingSection', linkSelector: 'a[href="#pricingSection"]' },
+      { id: 'testimonialsSection', linkSelector: 'a[href="#testimonialsSection"]' },
+      { id: 'faqSection', linkSelector: 'a[href="#faqSection"]' }
+    ];
+
+    // Sticky Shadow on Scroll
+    function handleHeaderScroll() {
+      if (!header) return;
+      if (window.scrollY > 15) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
       }
     }
+    window.addEventListener('scroll', handleHeaderScroll, { passive: true });
+    handleHeaderScroll();
 
-    function updateTimer() {
-      const now = Date.now();
-      const remainingMs = Math.max(0, endTime - now);
-      const remainingSec = Math.floor(remainingMs / 1000);
+    // Mobile Drawer Toggle
+    if (mobileToggle && mobileDrawer) {
+      mobileToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = mobileDrawer.classList.toggle('open');
+        mobileToggle.classList.toggle('active', isOpen);
+        mobileToggle.setAttribute('aria-expanded', String(isOpen));
+        mobileDrawer.setAttribute('aria-hidden', String(!isOpen));
+      });
 
-      const mins = Math.floor((remainingSec % 3600) / 60);
-      const secs = remainingSec % 60;
-
-      if (cdDays) cdDays.textContent = '00';
-      if (cdHours) cdHours.textContent = '00';
-      if (cdMinutes) cdMinutes.textContent = String(mins).padStart(2, '0');
-      if (cdSeconds) cdSeconds.textContent = String(secs).padStart(2, '0');
+      // Close drawer on click outside
+      document.addEventListener('click', (e) => {
+        if (mobileDrawer.classList.contains('open') && !header.contains(e.target)) {
+          mobileDrawer.classList.remove('open');
+          mobileToggle.classList.remove('active');
+          mobileToggle.setAttribute('aria-expanded', 'false');
+          mobileDrawer.setAttribute('aria-hidden', 'true');
+        }
+      });
     }
 
-    updateTimer();
-    setInterval(updateTimer, 1000);
+    // Smooth Scroll with Header Offset
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const targetId = link.getAttribute('href');
+        if (!targetId || !targetId.startsWith('#')) return;
+
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          const headerHeight = header ? header.offsetHeight : 72;
+          const targetPosition = targetEl.getBoundingClientRect().top + window.scrollY - headerHeight + 2;
+
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+
+          // Close mobile drawer if open
+          if (mobileDrawer && mobileDrawer.classList.contains('open')) {
+            mobileDrawer.classList.remove('open');
+            if (mobileToggle) {
+              mobileToggle.classList.remove('active');
+              mobileToggle.setAttribute('aria-expanded', 'false');
+            }
+            mobileDrawer.setAttribute('aria-hidden', 'true');
+          }
+        }
+      });
+    });
+
+    // ScrollSpy: Highlight Current Section in Navigation
+    function updateActiveNav() {
+      const scrollPos = window.scrollY + (header ? header.offsetHeight + 60 : 130);
+      let currentSectionId = '';
+
+      for (let i = 0; i < sections.length; i++) {
+        const sec = document.getElementById(sections[i].id);
+        if (sec) {
+          const top = sec.offsetTop;
+          const height = sec.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            currentSectionId = sections[i].id;
+            break;
+          }
+        }
+      }
+
+      navLinks.forEach(l => {
+        const href = l.getAttribute('href');
+        if (currentSectionId && href === `#${currentSectionId}`) {
+          l.classList.add('active');
+        } else {
+          l.classList.remove('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    updateActiveNav();
+  }
+
+  // ==========================================================================
+  // 12. MAGIC UI: NUMBER TICKER ANIMATION (CRO METRICS STRIP)
+  // ==========================================================================
+  function initNumberTicker() {
+    const counterElements = document.querySelectorAll('[data-counter-target]');
+    if (!counterElements.length) return;
+
+    function animateCounter(el) {
+      if (el.dataset.counterAnimated === 'true') return;
+      el.dataset.counterAnimated = 'true';
+
+      const target = parseFloat(el.getAttribute('data-counter-target'));
+      const decimals = parseInt(el.getAttribute('data-counter-decimals') || '0', 10);
+      const isComma = el.getAttribute('data-counter-format') === 'comma';
+      const duration = 1800; // ms
+      const startTime = performance.now();
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease out cubic
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+        const currentVal = target * easeProgress;
+
+        if (decimals > 0) {
+          el.textContent = currentVal.toFixed(decimals);
+        } else if (isComma) {
+          el.textContent = Math.floor(currentVal).toLocaleString('en-US');
+        } else {
+          el.textContent = Math.floor(currentVal).toString();
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          if (decimals > 0) {
+            el.textContent = target.toFixed(decimals);
+          } else if (isComma) {
+            el.textContent = target.toLocaleString('en-US');
+          } else {
+            el.textContent = target.toString();
+          }
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    counterElements.forEach(el => observer.observe(el));
+  }
+
+  // ==========================================================================
+  // 13. SHADCN CRO: AI LAB LIVE SCANNER SIMULATION
+  // ==========================================================================
+  function initAiSimulator() {
+    const triggerBtn = document.getElementById('simulateAiBtn');
+    const writingBeam = document.getElementById('writingScannerBeam');
+    const speakingBeam = document.getElementById('speakingScannerBeam');
+    const statusText = document.getElementById('aiSimStatus');
+    const btnText = document.getElementById('simulateAiBtnText');
+
+    if (!triggerBtn) return;
+
+    let isScanning = false;
+
+    triggerBtn.addEventListener('click', () => {
+      if (isScanning) return;
+      isScanning = true;
+
+      ConversionTracker.track('ai_simulation_demo_click', { action: 'scan_sample' });
+
+      // Visual state: active
+      triggerBtn.disabled = true;
+      triggerBtn.style.opacity = '0.85';
+      if (btnText) btnText.textContent = 'Đang quét phân tích bài...';
+      if (statusText) {
+        statusText.innerHTML = '<span class="ai-pulse-dot" style="background:#FF5A00;box-shadow:0 0 8px #FF5A00;"></span> AI đang duyệt cấu trúc ngữ pháp và phát âm...';
+      }
+
+      // Start laser beams
+      if (writingBeam) {
+        writingBeam.classList.remove('active-scan');
+        void writingBeam.offsetWidth; // force reflow
+        writingBeam.classList.add('active-scan');
+      }
+
+      if (speakingBeam) {
+        speakingBeam.classList.remove('active-scan');
+        void speakingBeam.offsetWidth; // force reflow
+        speakingBeam.classList.add('active-scan');
+      }
+
+      // Complete simulation after 2.4s
+      setTimeout(() => {
+        if (writingBeam) writingBeam.classList.remove('active-scan');
+        if (speakingBeam) speakingBeam.classList.remove('active-scan');
+
+        if (statusText) {
+          statusText.innerHTML = '<span class="ai-pulse-dot" style="background:#10B981;box-shadow:0 0 8px #10B981;"></span> <strong>Chấm xong (30s):</strong> Chuẩn 4 tiêu chí khảo thí Cam 19!';
+        }
+        if (btnText) btnText.textContent = '✓ Quét thành công (Thử lại)';
+
+        triggerBtn.disabled = false;
+        triggerBtn.style.opacity = '1';
+        isScanning = false;
+      }, 2400);
+    });
+  }
+
+
+
+  // ==========================================================================
+  // 15. PRICING PACKAGES SELECTION & SMOOTH SCROLL TO FORM
+  // ==========================================================================
+  function initPricingPackages() {
+    const priceBtns = document.querySelectorAll('[data-pkg-choice]');
+    const formCard = document.getElementById('leadFormCard');
+
+    priceBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const choice = btn.getAttribute('data-pkg-choice');
+        const pkgName = btn.getAttribute('data-pkg-name');
+        const price = btn.getAttribute('data-pkg-price');
+
+        ConversionTracker.track('pricing_card_cta_click', {
+          package_choice: choice,
+          package_name: pkgName,
+          price: price
+        });
+
+        // Trigger selection of matching pill in hero form
+        const targetPill = document.querySelector(`.pkg-pill[data-pkg="${choice}"]`);
+        if (targetPill) {
+          targetPill.click();
+        }
+
+        // Smooth scroll to hero form card
+        if (formCard) {
+          formCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => {
+            const nameInput = document.getElementById('fullNameInput');
+            if (nameInput) nameInput.focus();
+          }, 450);
+        }
+      });
+    });
   }
 
 })();
+
