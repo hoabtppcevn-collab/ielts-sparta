@@ -276,26 +276,9 @@
                 <span class="field-error-msg" id="phoneError">Vui lòng nhập số điện thoại hợp lệ (10 số).</span>
               </div>
 
-              <!-- Package Selection Pills -->
-              <div class="form-group">
-                <label class="form-label">Gói đăng ký</label>
-                <div class="form-pkg-pills" id="formPkgPills">
-                  <button type="button" class="pkg-pill active" data-pkg="mock99" data-price="99000" data-label="BẮT ĐẦU THI NGAY" data-modal-title="Gói Thi Thử 99K">
-                    <span class="pill-name">Thi Thử</span>
-                    <span class="pill-price">99K</span>
-                  </button>
-                  <button type="button" class="pkg-pill" data-pkg="save400" data-price="400000" data-label="ĐĂNG KÝ GÓI TIẾT KIỆM" data-modal-title="Gói Tiết Kiệm 400K / 30 ngày">
-                    <span class="pill-name">Tiết Kiệm</span>
-                    <span class="pill-price">400K</span>
-                  </button>
-                  <button type="button" class="pkg-pill" data-pkg="hard850" data-price="850000" data-label="ĐĂNG KÝ GÓI CHĂM CHỈ" data-modal-title="Gói Chăm Chỉ 850K / 30 ngày">
-                    <span class="pill-name">Chăm Chỉ</span>
-                    <span class="pill-price">850K</span>
-                  </button>
-                </div>
-                <input type="hidden" name="selectedPackage" id="selectedPackageInput" value="mock99">
-                <input type="hidden" name="selectedPrice" id="selectedPriceInput" value="99000">
-              </div>
+              <!-- Hidden package inputs (default 99K) -->
+              <input type="hidden" name="selectedPackage" id="selectedPackageInput" value="mock99">
+              <input type="hidden" name="selectedPrice" id="selectedPriceInput" value="99000">
 
               <!-- Embedded 99K Offer Countdown Timer -->
               <div class="form-countdown-box" id="formCountdownBox" aria-label="Đếm ngược ưu đãi">

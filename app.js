@@ -1002,10 +1002,15 @@
           price: price
         });
 
-        // Trigger selection of matching pill in hero form
+        // Trigger selection of matching pill in hero form, or set hidden inputs directly
         const targetPill = document.querySelector(`.pkg-pill[data-pkg="${choice}"]`);
         if (targetPill) {
           targetPill.click();
+        } else {
+          const selectedPkgInput = document.getElementById('selectedPackageInput');
+          const selectedPriceInput = document.getElementById('selectedPriceInput');
+          if (selectedPkgInput) selectedPkgInput.value = choice;
+          if (selectedPriceInput) selectedPriceInput.value = price;
         }
 
         // Smooth scroll to hero form card
