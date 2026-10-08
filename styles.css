@@ -1784,15 +1784,15 @@ p {
   position: -webkit-sticky;
   position: sticky;
   top: 76px;
-  height: calc(100vh - 82px);
-  max-height: 760px;
-  min-height: 580px;
+  height: auto;
+  max-height: none;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   overflow: visible;
-  padding: 12px 0 20px;
+  padding: 8px 0 0;
 }
 
 /* Top Progress Indicator Tabs */
@@ -1870,7 +1870,7 @@ p {
   position: relative;
   width: 100%;
   max-width: 1180px;
-  height: 520px;
+  height: 490px;
   margin: 0 auto;
 }
 
@@ -1883,9 +1883,9 @@ p {
   width: 100%;
   background: #FFFFFF;
   border: 1.5px solid #DCEAF8;
-  border-radius: 32px;
+  border-radius: 30px;
   box-shadow: 0 20px 50px -10px rgba(7, 27, 61, 0.16), 0 4px 16px rgba(7, 27, 61, 0.04);
-  padding: 34px 44px;
+  padding: 28px 38px;
   overflow: hidden;
   transform-origin: center bottom;
   will-change: transform, filter, opacity;
@@ -2165,13 +2165,16 @@ p {
    ========================================================================== */
 @media (max-width: 991px) {
   .sparta-sticky-stage {
-    max-height: 780px;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    padding: 6px 0 0;
   }
   .sparta-cards-deck {
-    height: 540px;
+    height: 500px;
   }
   .sparta-deck-card {
-    padding: 28px 26px;
+    padding: 24px 22px;
   }
   .stacked-card-inner {
     gap: 24px;
@@ -2530,7 +2533,7 @@ p {
    Vibrant Accent Orange (#FF5A00), High-Key Pastel Blue (#EBF4FE / #DCEEFE)
    ========================================================================== */
 .ai-showcase-section {
-  padding: 64px 0 56px;
+  padding: 24px 0 56px;
   background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 65%, #F6FAFE 100%);
   position: relative;
   overflow: hidden;
@@ -2982,7 +2985,7 @@ p {
 /* Responsive adjustments */
 @media (max-width: 991px) {
   .ai-showcase-section {
-    padding: 42px 0 32px;
+    padding: 20px 0 32px;
   }
   .ai-showcase-grid {
     grid-template-columns: 1fr;
@@ -3007,7 +3010,7 @@ p {
 
 @media (max-width: 576px) {
   .ai-showcase-section {
-    padding: 30px 0 20px;
+    padding: 16px 0 20px;
   }
   .ai-showcase-grid {
     gap: 18px;
