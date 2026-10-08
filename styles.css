@@ -2526,7 +2526,7 @@ p {
    Vibrant Accent Orange (#FF5A00), High-Key Pastel Blue (#EBF4FE / #DCEEFE)
    ========================================================================== */
 .ai-showcase-section {
-  padding: 64px 0 56px;
+  padding: 54px 0 24px;
   background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 65%, #F6FAFE 100%);
   position: relative;
   overflow: hidden;
@@ -2540,7 +2540,7 @@ p {
   grid-template-columns: 1.02fr 1.28fr;
   gap: 48px;
   align-items: center;
-  margin-bottom: 48px;
+  margin-bottom: 32px;
 }
 
 /* Left Column */
@@ -2978,7 +2978,7 @@ p {
 /* Responsive adjustments */
 @media (max-width: 991px) {
   .ai-showcase-section {
-    padding: 42px 0 32px;
+    padding: 36px 0 18px;
   }
   .ai-showcase-grid {
     grid-template-columns: 1fr;
@@ -3003,7 +3003,7 @@ p {
 
 @media (max-width: 576px) {
   .ai-showcase-section {
-    padding: 30px 0 20px;
+    padding: 26px 0 14px;
   }
   .ai-showcase-grid {
     gap: 18px;
@@ -6448,7 +6448,7 @@ p {
    SECTION 5 — SPARTA PRICING PACKAGES (High-Key Daylight Studio)
    ========================================================================== */
 .sparta-pricing-section {
-  padding: 50px 0 60px;
+  padding: 24px 0 54px;
   background: linear-gradient(180deg, #F6FAFE 0%, #EEF5FD 35%, #E6F0FC 70%, #FFFFFF 100%);
   position: relative;
   border-top: none !important;
