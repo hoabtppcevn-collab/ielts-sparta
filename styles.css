@@ -1756,50 +1756,139 @@ p {
    Viền xanh nhẹ (#94C1F5), Chi tiết Trắng tinh khiết (#FFFFFF), Điểm nhấn Cam (#FF5A00)
    Xóa số mờ, trượt lướt mượt mà giữa 4 kỹ năng trong 1 session duy nhất
    ========================================================================== */
-.product-experience-section {
-  padding: 50px 0 56px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #EFF6FE 25%, #EFF6FE 80%, #FFFFFF 100%);
-  position: relative;
-}
-
 /* ==========================================================================
-   SPARTA STICKY STACKED CARDS — 4 SKILLS EXAM SHOWCASE (PREP-STYLE SCROLL)
-   Scroll-driven stacked cards with position: sticky, subtle scale (1 -> 0.965),
-   light dimming, depth shadow & alternating desktop layout.
+   SPARTA SCROLL-PINNED DECK — 4 EXAM SCREENS IN 1 SECTION (PREP STYLE)
+   Pinned viewport stage where scrolling transitions through the 4 cards.
+   Card scales, rises, dims & stacks with realistic depth.
    ========================================================================== */
 
-.sparta-stacked-cards-container {
-  max-width: 1180px;
-  margin: 32px auto 0;
+.product-experience-section {
+  padding: 40px 0 0;
+  background: linear-gradient(180deg, #FFFFFF 0%, #EFF6FE 20%, #EFF6FE 85%, #FFFFFF 100%);
   position: relative;
-  padding-bottom: 24px;
 }
 
-/* Individual Stacked Card: bo góc mạnh 32px, style Sparta */
-.sparta-stacked-card {
+/* Scroll Pin Track: Provides the scroll height for the pinned experience */
+.sparta-scroll-pin-track {
+  height: 380vh;
+  position: relative;
+  margin-top: 20px;
+}
+
+/* Sticky Stage pinned in viewport */
+.sparta-sticky-stage {
   position: -webkit-sticky;
   position: sticky;
-  top: calc(96px + (var(--card-index, 0) * 28px));
-  z-index: calc(var(--card-index, 0) + 1);
+  top: 76px;
+  height: calc(100vh - 82px);
+  max-height: 760px;
+  min-height: 580px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  padding: 12px 0 20px;
+}
+
+/* Top Progress Indicator Tabs */
+.deck-progress-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1.5px solid #CFE2F7;
+  padding: 5px;
+  border-radius: 999px;
+  margin: 0 auto 18px;
+  box-shadow: 0 4px 18px rgba(7, 27, 61, 0.07);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 20;
+  position: relative;
+}
+
+.deck-progress-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #4A6382;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.deck-progress-tab:hover {
+  color: #1D68BD;
+  background: rgba(29, 104, 189, 0.06);
+}
+
+.deck-progress-tab .tab-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #A0C0E6;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.deck-progress-tab .tab-num {
+  font-weight: 700;
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.deck-progress-tab.active {
+  background: #1D68BD;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(29, 104, 189, 0.25);
+}
+
+.deck-progress-tab.active .tab-dot {
+  background: #FF5A00;
+  transform: scale(1.3);
+  box-shadow: 0 0 6px rgba(255, 90, 0, 0.8);
+}
+
+.deck-progress-tab.active .tab-num {
+  opacity: 1;
+  color: #FFE5D4;
+}
+
+/* Cards Deck Container: Holds the stacked cards */
+.sparta-cards-deck {
+  position: relative;
+  width: 100%;
+  max-width: 1180px;
+  height: 520px;
+  margin: 0 auto;
+}
+
+/* Individual Deck Card */
+.sparta-deck-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   background: #FFFFFF;
   border: 1.5px solid #DCEAF8;
   border-radius: 32px;
-  box-shadow: 0 16px 44px -8px rgba(7, 27, 61, 0.12), 0 4px 16px rgba(7, 27, 61, 0.04);
-  padding: 38px 44px;
-  margin-bottom: 76px;
+  box-shadow: 0 20px 50px -10px rgba(7, 27, 61, 0.16), 0 4px 16px rgba(7, 27, 61, 0.04);
+  padding: 34px 44px;
   overflow: hidden;
-  position: relative;
-  transform-origin: top center;
+  transform-origin: center bottom;
   will-change: transform, filter, opacity;
-  transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), filter 0.15s ease, opacity 0.15s ease, box-shadow 0.25s ease;
+  transition: box-shadow 0.25s ease;
 }
 
-.sparta-stacked-card:last-child {
-  margin-bottom: 0;
-}
-
-/* Subtle Sparta Top Accent Line */
-.sparta-stacked-card::before {
+.sparta-deck-card::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1810,7 +1899,7 @@ p {
   opacity: 0.9;
 }
 
-/* Large Subtle Background Watermark (01 / 02 / 03 / 04 & LISTENING...) */
+/* Watermark typography in background */
 .stacked-card-watermark {
   position: absolute;
   right: 36px;
@@ -1843,8 +1932,7 @@ p {
   margin-top: -6px;
 }
 
-/* Watermark position for alternating layout */
-.sparta-stacked-card.layout-reversed .stacked-card-watermark {
+.sparta-deck-card.layout-reversed .stacked-card-watermark {
   right: auto;
   left: 36px;
   align-items: flex-start;
@@ -1860,11 +1948,11 @@ p {
   gap: clamp(28px, 4vw, 56px);
 }
 
-.sparta-stacked-card.layout-reversed .stacked-card-inner {
+.sparta-deck-card.layout-reversed .stacked-card-inner {
   flex-direction: row-reverse;
 }
 
-/* Text Content Column: 50% Desktop */
+/* Text Content Column: 42% Desktop */
 .stacked-card-content {
   flex: 0 0 42%;
   max-width: 440px;
@@ -1898,7 +1986,7 @@ p {
 /* Headline */
 .stacked-card-title {
   font-family: var(--font-family);
-  font-size: clamp(24px, 2.3vw, 32px);
+  font-size: clamp(23px, 2.3vw, 30px);
   font-weight: 800;
   color: #071B3D;
   line-height: 1.25;
@@ -1970,7 +2058,7 @@ p {
   transform: translateX(3px);
 }
 
-/* Screenshot Column: 50% Desktop & Trọng tâm */
+/* Screenshot Column: 58% Desktop & Focal Point */
 .stacked-card-media {
   flex: 1 1 58%;
   min-width: 0;
@@ -2072,12 +2160,17 @@ p {
    RESPONSIVE & MOBILE
    ========================================================================== */
 @media (max-width: 991px) {
-  .sparta-stacked-card {
-    padding: 30px 28px;
-    margin-bottom: 48px;
+  .sparta-sticky-stage {
+    max-height: 780px;
+  }
+  .sparta-cards-deck {
+    height: 540px;
+  }
+  .sparta-deck-card {
+    padding: 28px 26px;
   }
   .stacked-card-inner {
-    gap: 28px;
+    gap: 24px;
   }
   .stacked-card-content {
     flex: 0 0 46%;
@@ -2088,25 +2181,40 @@ p {
 }
 
 @media (max-width: 768px) {
-  .sparta-stacked-cards-container {
-    margin-top: 20px;
-    padding-bottom: 10px;
+  .sparta-scroll-pin-track {
+    height: auto !important;
+    margin-top: 16px;
   }
-  .sparta-stacked-card {
+  .sparta-sticky-stage {
     position: relative !important;
     top: auto !important;
-    padding: 22px 18px;
-    border-radius: 22px;
-    margin-bottom: 24px;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    padding: 0 0 20px !important;
+  }
+  .deck-progress-tabs {
+    display: none !important;
+  }
+  .sparta-cards-deck {
+    height: auto !important;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .sparta-deck-card {
+    position: relative !important;
     transform: none !important;
     filter: none !important;
     opacity: 1 !important;
+    padding: 22px 18px !important;
+    border-radius: 22px !important;
   }
   .stacked-card-watermark {
-    display: none;
+    display: none !important;
   }
   .stacked-card-inner,
-  .sparta-stacked-card.layout-reversed .stacked-card-inner {
+  .sparta-deck-card.layout-reversed .stacked-card-inner {
     flex-direction: column !important;
     gap: 18px;
   }
@@ -2147,7 +2255,7 @@ p {
 
 /* Reduced Motion Preference */
 @media (prefers-reduced-motion: reduce) {
-  .sparta-stacked-card {
+  .sparta-deck-card {
     transition: none !important;
     transform: none !important;
     filter: none !important;

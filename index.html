@@ -23,7 +23,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=52">
+  <link rel="stylesheet" href="styles.css?v=53">
   
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="assets/sparta-logo.png">
@@ -299,246 +299,277 @@
         <h2 class="section-title dark-text">Thi thử IELTS 4 kỹ năng <span class="title-accent-orange">như thi thật</span></h2>
         <p class="section-subtitle dark-sub">Trải nghiệm giao diện và quy trình thi máy chuẩn thực tế.</p>
       </div>
+    </div>
+    <!-- Scroll Track: 4 trang giao diện phòng thi trên cùng 1 section (Hiệu ứng PREP) -->
+    <div class="sparta-scroll-pin-track" id="spartaScrollTrack">
+      <div class="sparta-sticky-stage" id="spartaStickyStage">
+        <div class="container">
 
-      <!-- Sticky Stacked Cards: 4 kỹ năng IELTS Sparta (Scroll-driven stacked cards) -->
-      <div class="sparta-stacked-cards-container" id="spartaStackedContainer">
+          <!-- Top Progress Indicator Tabs: 4 kỹ năng -->
+          <div class="deck-progress-tabs" role="tablist" aria-label="Kỹ năng thi IELTS">
+            <button type="button" class="deck-progress-tab active" data-index="0" role="tab" aria-selected="true">
+              <span class="tab-dot"></span>
+              <span class="tab-num">01</span>
+              <span class="tab-name">Listening</span>
+            </button>
+            <button type="button" class="deck-progress-tab" data-index="1" role="tab" aria-selected="false">
+              <span class="tab-dot"></span>
+              <span class="tab-num">02</span>
+              <span class="tab-name">Reading</span>
+            </button>
+            <button type="button" class="deck-progress-tab" data-index="2" role="tab" aria-selected="false">
+              <span class="tab-dot"></span>
+              <span class="tab-num">03</span>
+              <span class="tab-name">Writing</span>
+            </button>
+            <button type="button" class="deck-progress-tab" data-index="3" role="tab" aria-selected="false">
+              <span class="tab-dot"></span>
+              <span class="tab-num">04</span>
+              <span class="tab-name">Speaking</span>
+            </button>
+          </div>
 
-        <!-- CARD 01: LISTENING (Text Left / Image Right) -->
-        <article class="sparta-stacked-card card-listening" data-card-index="0" id="stackedCardListening" style="--card-index: 0;">
-          <div class="stacked-card-watermark" aria-hidden="true">
-            <span class="watermark-num">01</span>
-            <span class="watermark-text">LISTENING</span>
-          </div>
-          <div class="stacked-card-inner">
-            <div class="stacked-card-content">
-              <div class="stacked-card-badge">
-                <span class="stacked-badge-dot"></span>
-                <span>01 · LISTENING</span>
-              </div>
-              <h3 class="stacked-card-title">Nghe và làm bài trực tiếp trên máy</h3>
-              <div class="stacked-card-pills-row">
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                  <span>Audio 1 lần</span>
-                </div>
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                  <span>40 câu</span>
-                </div>
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  <span>32 phút</span>
-                </div>
-              </div>
-              <div class="stacked-card-action">
-                <a href="#leadFormCard" class="stacked-cta-btn">
-                  <span>Trải nghiệm ngay</span>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                </a>
-              </div>
-            </div>
-            <div class="stacked-card-media">
-              <div class="stacked-mockup-frame ai-zoom-trigger" data-zoom-img="assets/exam-listening-ui.png" data-zoom-title="Giao diện thi IELTS Listening trên máy Sparta">
-                <div class="stacked-mockup-header">
-                  <div class="mockup-dots">
-                    <span class="dot dot-r"></span>
-                    <span class="dot dot-y"></span>
-                    <span class="dot dot-g"></span>
-                  </div>
-                  <div class="mockup-url-bar">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    <span>spartaedu.com/phong-thi-nghe</span>
-                  </div>
-                  <div class="mockup-zoom-tag">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                    <span>Phóng to</span>
-                  </div>
-                </div>
-                <div class="stacked-mockup-body">
-                  <img src="assets/exam-listening-ui.png" alt="Giao diện thi IELTS Listening trên máy Sparta" class="stacked-mockup-img" loading="lazy">
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
+          <!-- Cards Deck Container: Cùng 1 chỗ, di chuột cuộn trượt chồng lớp -->
+          <div class="sparta-cards-deck" id="spartaCardsDeck">
 
-        <!-- CARD 02: READING (Image Left / Text Right - Alternating) -->
-        <article class="sparta-stacked-card card-reading layout-reversed" data-card-index="1" id="stackedCardReading" style="--card-index: 1;">
-          <div class="stacked-card-watermark" aria-hidden="true">
-            <span class="watermark-num">02</span>
-            <span class="watermark-text">READING</span>
-          </div>
-          <div class="stacked-card-inner">
-            <div class="stacked-card-content">
-              <div class="stacked-card-badge">
-                <span class="stacked-badge-dot"></span>
-                <span>02 · READING</span>
+            <!-- CARD 01: LISTENING (Text Left / Image Right) -->
+            <article class="sparta-deck-card card-listening" data-card-index="0" id="deckCardListening" style="--card-index: 0; z-index: 1;">
+              <div class="stacked-card-watermark" aria-hidden="true">
+                <span class="watermark-num">01</span>
+                <span class="watermark-text">LISTENING</span>
               </div>
-              <h3 class="stacked-card-title">Đọc đề và làm bài song song</h3>
-              <div class="stacked-card-pills-row">
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
-                  <span>Chia đôi màn hình</span>
-                </div>
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                  <span>Highlight từ khóa</span>
-                </div>
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  <span>60 phút</span>
-                </div>
-              </div>
-              <div class="stacked-card-action">
-                <a href="#leadFormCard" class="stacked-cta-btn">
-                  <span>Trải nghiệm ngay</span>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                </a>
-              </div>
-            </div>
-            <div class="stacked-card-media">
-              <div class="stacked-mockup-frame ai-zoom-trigger" data-zoom-img="assets/exam-reading-ui.png" data-zoom-title="Giao diện thi IELTS Reading trên máy Sparta">
-                <div class="stacked-mockup-header">
-                  <div class="mockup-dots">
-                    <span class="dot dot-r"></span>
-                    <span class="dot dot-y"></span>
-                    <span class="dot dot-g"></span>
+              <div class="stacked-card-inner">
+                <div class="stacked-card-content">
+                  <div class="stacked-card-badge">
+                    <span class="stacked-badge-dot"></span>
+                    <span>01 · LISTENING</span>
                   </div>
-                  <div class="mockup-url-bar">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    <span>spartaedu.com/phong-thi-doc</span>
+                  <h3 class="stacked-card-title">Nghe và làm bài trực tiếp trên máy</h3>
+                  <div class="stacked-card-pills-row">
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                      <span>Audio 1 lần</span>
+                    </div>
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                      <span>40 câu</span>
+                    </div>
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      <span>32 phút</span>
+                    </div>
                   </div>
-                  <div class="mockup-zoom-tag">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                    <span>Phóng to</span>
+                  <div class="stacked-card-action">
+                    <a href="#leadFormCard" class="stacked-cta-btn">
+                      <span>Trải nghiệm ngay</span>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
                   </div>
                 </div>
-                <div class="stacked-mockup-body">
-                  <img src="assets/exam-reading-ui.png" alt="Giao diện thi IELTS Reading trên máy Sparta" class="stacked-mockup-img" loading="lazy">
+                <div class="stacked-card-media">
+                  <div class="stacked-mockup-frame ai-zoom-trigger" data-zoom-img="assets/exam-listening-ui.png" data-zoom-title="Giao diện thi IELTS Listening trên máy Sparta">
+                    <div class="stacked-mockup-header">
+                      <div class="mockup-dots">
+                        <span class="dot dot-r"></span>
+                        <span class="dot dot-y"></span>
+                        <span class="dot dot-g"></span>
+                      </div>
+                      <div class="mockup-url-bar">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>spartaedu.com/phong-thi-nghe</span>
+                      </div>
+                      <div class="mockup-zoom-tag">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                        <span>Phóng to</span>
+                      </div>
+                    </div>
+                    <div class="stacked-mockup-body">
+                      <img src="assets/exam-listening-ui.png" alt="Giao diện thi IELTS Listening trên máy Sparta" class="stacked-mockup-img" loading="lazy">
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </article>
+            </article>
 
-        <!-- CARD 03: WRITING (Text Left / Image Right) -->
-        <article class="sparta-stacked-card card-writing" data-card-index="2" id="stackedCardWriting" style="--card-index: 2;">
-          <div class="stacked-card-watermark" aria-hidden="true">
-            <span class="watermark-num">03</span>
-            <span class="watermark-text">WRITING</span>
-          </div>
-          <div class="stacked-card-inner">
-            <div class="stacked-card-content">
-              <div class="stacked-card-badge">
-                <span class="stacked-badge-dot"></span>
-                <span>03 · WRITING</span>
+            <!-- CARD 02: READING (Image Left / Text Right - Alternating) -->
+            <article class="sparta-deck-card card-reading layout-reversed" data-card-index="1" id="deckCardReading" style="--card-index: 1; z-index: 2;">
+              <div class="stacked-card-watermark" aria-hidden="true">
+                <span class="watermark-num">02</span>
+                <span class="watermark-text">READING</span>
               </div>
-              <h3 class="stacked-card-title">Gõ bài trực tiếp trên máy</h3>
-              <div class="stacked-card-pills-row">
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
-                  <span>Đếm từ tự động</span>
-                </div>
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                  <span>Tự lưu bài</span>
-                </div>
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                  <span>Task 1 & 2</span>
-                </div>
-              </div>
-              <div class="stacked-card-action">
-                <a href="#leadFormCard" class="stacked-cta-btn">
-                  <span>Trải nghiệm ngay</span>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                </a>
-              </div>
-            </div>
-            <div class="stacked-card-media">
-              <div class="stacked-mockup-frame ai-zoom-trigger" data-zoom-img="assets/exam-writing-ui.png" data-zoom-title="Giao diện thi IELTS Writing trên máy Sparta">
-                <div class="stacked-mockup-header">
-                  <div class="mockup-dots">
-                    <span class="dot dot-r"></span>
-                    <span class="dot dot-y"></span>
-                    <span class="dot dot-g"></span>
+              <div class="stacked-card-inner">
+                <div class="stacked-card-content">
+                  <div class="stacked-card-badge">
+                    <span class="stacked-badge-dot"></span>
+                    <span>02 · READING</span>
                   </div>
-                  <div class="mockup-url-bar">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    <span>spartaedu.com/phong-thi-viet</span>
+                  <h3 class="stacked-card-title">Đọc đề và làm bài song song</h3>
+                  <div class="stacked-card-pills-row">
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                      <span>Chia đôi màn hình</span>
+                    </div>
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                      <span>Highlight từ khóa</span>
+                    </div>
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      <span>60 phút</span>
+                    </div>
                   </div>
-                  <div class="mockup-zoom-tag">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                    <span>Phóng to</span>
+                  <div class="stacked-card-action">
+                    <a href="#leadFormCard" class="stacked-cta-btn">
+                      <span>Trải nghiệm ngay</span>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
                   </div>
                 </div>
-                <div class="stacked-mockup-body">
-                  <img src="assets/exam-writing-ui.png" alt="Giao diện thi IELTS Writing trên máy Sparta" class="stacked-mockup-img" loading="lazy">
+                <div class="stacked-card-media">
+                  <div class="stacked-mockup-frame ai-zoom-trigger" data-zoom-img="assets/exam-reading-ui.png" data-zoom-title="Giao diện thi IELTS Reading trên máy Sparta">
+                    <div class="stacked-mockup-header">
+                      <div class="mockup-dots">
+                        <span class="dot dot-r"></span>
+                        <span class="dot dot-y"></span>
+                        <span class="dot dot-g"></span>
+                      </div>
+                      <div class="mockup-url-bar">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>spartaedu.com/phong-thi-doc</span>
+                      </div>
+                      <div class="mockup-zoom-tag">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                        <span>Phóng to</span>
+                      </div>
+                    </div>
+                    <div class="stacked-mockup-body">
+                      <img src="assets/exam-reading-ui.png" alt="Giao diện thi IELTS Reading trên máy Sparta" class="stacked-mockup-img" loading="lazy">
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </article>
+            </article>
 
-        <!-- CARD 04: SPEAKING (Image Left / Text Right - Alternating) -->
-        <article class="sparta-stacked-card card-speaking layout-reversed" data-card-index="3" id="stackedCardSpeaking" style="--card-index: 3;">
-          <div class="stacked-card-watermark" aria-hidden="true">
-            <span class="watermark-num">04</span>
-            <span class="watermark-text">SPEAKING</span>
-          </div>
-          <div class="stacked-card-inner">
-            <div class="stacked-card-content">
-              <div class="stacked-card-badge">
-                <span class="stacked-badge-dot"></span>
-                <span>04 · SPEAKING</span>
+            <!-- CARD 03: WRITING (Text Left / Image Right) -->
+            <article class="sparta-deck-card card-writing" data-card-index="2" id="deckCardWriting" style="--card-index: 2; z-index: 3;">
+              <div class="stacked-card-watermark" aria-hidden="true">
+                <span class="watermark-num">03</span>
+                <span class="watermark-text">WRITING</span>
               </div>
-              <h3 class="stacked-card-title">Thu âm câu trả lời trực tiếp</h3>
-              <div class="stacked-card-pills-row">
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-                  <span>3 Parts</span>
-                </div>
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  <span>Thu âm trực tiếp</span>
-                </div>
-                <div class="stacked-pill-tag">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-                  <span>AI feedback</span>
-                </div>
-              </div>
-              <div class="stacked-card-action">
-                <a href="#leadFormCard" class="stacked-cta-btn">
-                  <span>Trải nghiệm ngay</span>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                </a>
-              </div>
-            </div>
-            <div class="stacked-card-media">
-              <div class="stacked-mockup-frame ai-zoom-trigger" data-zoom-img="assets/exam-speaking-ui.png" data-zoom-title="Giao diện thi IELTS Speaking trên máy Sparta">
-                <div class="stacked-mockup-header">
-                  <div class="mockup-dots">
-                    <span class="dot dot-r"></span>
-                    <span class="dot dot-y"></span>
-                    <span class="dot dot-g"></span>
+              <div class="stacked-card-inner">
+                <div class="stacked-card-content">
+                  <div class="stacked-card-badge">
+                    <span class="stacked-badge-dot"></span>
+                    <span>03 · WRITING</span>
                   </div>
-                  <div class="mockup-url-bar">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    <span>spartaedu.com/phong-thi-noi</span>
+                  <h3 class="stacked-card-title">Gõ bài trực tiếp trên máy</h3>
+                  <div class="stacked-card-pills-row">
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+                      <span>Đếm từ tự động</span>
+                    </div>
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                      <span>Tự lưu bài</span>
+                    </div>
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                      <span>Task 1 & 2</span>
+                    </div>
                   </div>
-                  <div class="mockup-zoom-tag">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                    <span>Phóng to</span>
+                  <div class="stacked-card-action">
+                    <a href="#leadFormCard" class="stacked-cta-btn">
+                      <span>Trải nghiệm ngay</span>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
                   </div>
                 </div>
-                <div class="stacked-mockup-body">
-                  <img src="assets/exam-speaking-ui.png" alt="Giao diện thi IELTS Speaking trên máy Sparta" class="stacked-mockup-img" loading="lazy">
+                <div class="stacked-card-media">
+                  <div class="stacked-mockup-frame ai-zoom-trigger" data-zoom-img="assets/exam-writing-ui.png" data-zoom-title="Giao diện thi IELTS Writing trên máy Sparta">
+                    <div class="stacked-mockup-header">
+                      <div class="mockup-dots">
+                        <span class="dot dot-r"></span>
+                        <span class="dot dot-y"></span>
+                        <span class="dot dot-g"></span>
+                      </div>
+                      <div class="mockup-url-bar">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>spartaedu.com/phong-thi-viet</span>
+                      </div>
+                      <div class="mockup-zoom-tag">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                        <span>Phóng to</span>
+                      </div>
+                    </div>
+                    <div class="stacked-mockup-body">
+                      <img src="assets/exam-writing-ui.png" alt="Giao diện thi IELTS Writing trên máy Sparta" class="stacked-mockup-img" loading="lazy">
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </article>
+            </article>
 
+            <!-- CARD 04: SPEAKING (Image Left / Text Right - Alternating) -->
+            <article class="sparta-deck-card card-speaking layout-reversed" data-card-index="3" id="deckCardSpeaking" style="--card-index: 3; z-index: 4;">
+              <div class="stacked-card-watermark" aria-hidden="true">
+                <span class="watermark-num">04</span>
+                <span class="watermark-text">SPEAKING</span>
+              </div>
+              <div class="stacked-card-inner">
+                <div class="stacked-card-content">
+                  <div class="stacked-card-badge">
+                    <span class="stacked-badge-dot"></span>
+                    <span>04 · SPEAKING</span>
+                  </div>
+                  <h3 class="stacked-card-title">Thu âm câu trả lời trực tiếp</h3>
+                  <div class="stacked-card-pills-row">
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                      <span>3 Parts</span>
+                    </div>
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                      <span>Thu âm trực tiếp</span>
+                    </div>
+                    <div class="stacked-pill-tag">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                      <span>AI feedback</span>
+                    </div>
+                  </div>
+                  <div class="stacked-card-action">
+                    <a href="#leadFormCard" class="stacked-cta-btn">
+                      <span>Trải nghiệm ngay</span>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
+                  </div>
+                </div>
+                <div class="stacked-card-media">
+                  <div class="stacked-mockup-frame ai-zoom-trigger" data-zoom-img="assets/exam-speaking-ui.png" data-zoom-title="Giao diện thi IELTS Speaking trên máy Sparta">
+                    <div class="stacked-mockup-header">
+                      <div class="mockup-dots">
+                        <span class="dot dot-r"></span>
+                        <span class="dot dot-y"></span>
+                        <span class="dot dot-g"></span>
+                      </div>
+                      <div class="mockup-url-bar">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <span>spartaedu.com/phong-thi-noi</span>
+                      </div>
+                      <div class="mockup-zoom-tag">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                        <span>Phóng to</span>
+                      </div>
+                    </div>
+                    <div class="stacked-mockup-body">
+                      <img src="assets/exam-speaking-ui.png" alt="Giao diện thi IELTS Speaking trên máy Sparta" class="stacked-mockup-img" loading="lazy">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1815,6 +1846,6 @@
   </aside>
 
   <!-- JavaScript -->
-  <script src="app.js?v=22"></script>
+  <script src="app.js?v=23"></script>
 </body>
 </html>

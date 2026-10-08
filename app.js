@@ -583,139 +583,185 @@
   }
 
   // ==========================================================================
-  // 9. SPARTA STICKY STACKED CARDS (4 KỸ NĂNG IELTS SPARTA — PREP STYLE SCROLL)
+  // 9. SPARTA SCROLL-PINNED DECK (4 TRANG PHÒNG THI TRÊN CÙNG 1 SECTION - PREP STYLE)
   // ==========================================================================
   function initStickyStackedCards() {
-    const container = document.getElementById('spartaStackedContainer');
-    const cards = document.querySelectorAll('.sparta-stacked-card');
-    if (!container || !cards.length) return;
+    const track = document.getElementById('spartaScrollTrack');
+    const stage = document.getElementById('spartaStickyStage');
+    const cards = document.querySelectorAll('.sparta-deck-card');
+    const tabs = document.querySelectorAll('.deck-progress-tab');
 
+    if (!track || !cards.length) return;
+
+    const cardCount = cards.length;
     const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let ticking = false;
-    let isIntersecting = true;
-
-    // Track active card for analytics without spamming events
-    let currentActiveIdx = -1;
+    let isIntersecting = false;
+    let currentActiveIndex = -1;
     const skillNames = ['Listening', 'Reading', 'Writing', 'Speaking'];
 
-    function updateStackEffect() {
+    function updateDeck() {
       ticking = false;
 
-      // On mobile or when user prefers reduced motion, reset transforms for natural scrolling
+      // Reset styles on mobile or reduced-motion
       if (isReducedMotion || window.innerWidth <= 768) {
         cards.forEach(card => {
           card.style.transform = '';
           card.style.filter = '';
           card.style.opacity = '';
+          card.style.pointerEvents = 'auto';
         });
         return;
       }
 
-      const stackBase = 96;
-      const stackStep = 28;
-      const cardCount = cards.length;
+      const rect = track.getBoundingClientRect();
+      const trackHeight = track.offsetHeight;
+      const vh = window.innerHeight;
+      const stickyTop = 76; // matches sticky top offset
 
-      // Calculate overlap progress for each subsequent card (from index 1 to cardCount - 1)
-      const progresses = new Array(cardCount).fill(0);
-      for (let j = 1; j < cardCount; j++) {
-        const targetStickyTop = stackBase + j * stackStep;
-        const prevCard = cards[j - 1];
-        const prevHeight = prevCard.offsetHeight || 480;
-        // The scroll travel distance over which previous card scales down as card j scrolls up
-        const transitionDist = prevHeight * 0.75;
-        const rect = cards[j].getBoundingClientRect();
-        const currentTop = rect.top;
+      const scrollableDist = trackHeight - vh;
+      if (scrollableDist <= 0) return;
 
-        if (currentTop <= targetStickyTop) {
-          progresses[j] = 1;
-        } else if (currentTop >= targetStickyTop + transitionDist) {
-          progresses[j] = 0;
+      // Global scroll progress through the pinned track: 0.0 to 1.0
+      const scrolled = Math.max(0, Math.min(scrollableDist, stickyTop - rect.top));
+      const globalProgress = scrolled / scrollableDist;
+
+      const numTransitions = cardCount - 1; // 3 transitions between 4 cards
+
+      for (let i = 0; i < cardCount; i++) {
+        const card = cards[i];
+
+        if (i === 0) {
+          // Base card (Listening)
+          // Scales down and slides up slightly as cards 1, 2, 3 arrive
+          const p1 = Math.min(1, Math.max(0, globalProgress / (1 / numTransitions)));
+          const p2 = Math.min(1, Math.max(0, (globalProgress - 1 / numTransitions) / (1 / numTransitions)));
+          const p3 = Math.min(1, Math.max(0, (globalProgress - 2 / numTransitions) / (1 / numTransitions)));
+
+          const scale = Math.max(0.88, 1 - (0.045 * p1) - (0.035 * p2) - (0.025 * p3));
+          const ty = -(18 * p1 + 16 * p2 + 14 * p3);
+          const brightness = Math.max(0.82, 1 - (0.06 * p1) - (0.04 * p2) - (0.03 * p3));
+          const opacity = Math.max(0.75, 1 - (0.08 * p1) - (0.05 * p2) - (0.05 * p3));
+
+          card.style.transform = `translate3d(0, ${ty.toFixed(1)}px, 0) scale(${scale.toFixed(4)})`;
+          card.style.filter = `brightness(${brightness.toFixed(4)})`;
+          card.style.opacity = opacity.toFixed(4);
+          card.style.pointerEvents = globalProgress < 0.25 ? 'auto' : 'none';
         } else {
-          progresses[j] = (targetStickyTop + transitionDist - currentTop) / transitionDist;
+          // Cards 1, 2, 3
+          // Start below viewport (translateY: 105%), arrive smoothly at translateY(0)
+          const startTime = (i - 1) / numTransitions;
+          const endTime = i / numTransitions;
+
+          let enterProgress = 0;
+          if (globalProgress >= endTime) {
+            enterProgress = 1;
+          } else if (globalProgress <= startTime) {
+            enterProgress = 0;
+          } else {
+            enterProgress = (globalProgress - startTime) / (endTime - startTime);
+          }
+
+          // How much later cards (j > i) push this card down in scale and translateY
+          let scaleDown = 0;
+          let tyDown = 0;
+          let brightDown = 0;
+          let opacDown = 0;
+
+          for (let j = i + 1; j < cardCount; j++) {
+            const sTime = (j - 1) / numTransitions;
+            const eTime = j / numTransitions;
+            let nextP = 0;
+            if (globalProgress >= eTime) nextP = 1;
+            else if (globalProgress <= sTime) nextP = 0;
+            else nextP = (globalProgress - sTime) / (eTime - sTime);
+
+            scaleDown += 0.045 * nextP;
+            tyDown += 18 * nextP;
+            brightDown += 0.06 * nextP;
+            opacDown += 0.08 * nextP;
+          }
+
+          const enterTyPercent = (1 - enterProgress) * 105;
+          const finalTy = -(tyDown);
+          const finalScale = Math.max(0.88, 1 - scaleDown);
+          const finalBrightness = Math.max(0.82, 1 - brightDown);
+          const finalOpacity = enterProgress > 0 ? Math.max(0.75, 1 - opacDown) : 0;
+
+          card.style.transform = `translate3d(0, calc(${enterTyPercent.toFixed(2)}% + ${finalTy.toFixed(1)}px), 0) scale(${finalScale.toFixed(4)})`;
+          card.style.filter = `brightness(${finalBrightness.toFixed(4)})`;
+          card.style.opacity = finalOpacity.toFixed(4);
+
+          // Card is interactive when it's the active topmost card
+          const isCurrentTop = (enterProgress >= 0.7) && (i === cardCount - 1 || globalProgress < (i / numTransitions) + 0.2);
+          card.style.pointerEvents = isCurrentTop ? 'auto' : 'none';
         }
       }
 
-      // Determine current dominant / active card for conversion tracking
-      let activeIndex = 0;
-      for (let k = 1; k < cardCount; k++) {
-        if (progresses[k] >= 0.5) {
-          activeIndex = k;
-        }
-      }
+      // Determine active index for tabs and tracking
+      const activeIdx = Math.min(cardCount - 1, Math.floor(globalProgress * (cardCount - 0.01)));
+      tabs.forEach((tab, idx) => {
+        const isActive = idx === activeIdx;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
 
-      if (activeIndex !== currentActiveIdx) {
-        currentActiveIdx = activeIndex;
+      if (activeIdx !== currentActiveIndex) {
+        currentActiveIndex = activeIdx;
         if (window.ConversionTracker) {
-          ConversionTracker.track('sparta_stacked_card_view', {
-            index: activeIndex,
-            skill: skillNames[activeIndex] || `Skill_${activeIndex}`
+          ConversionTracker.track('sparta_exam_deck_change', {
+            index: activeIdx,
+            skill: skillNames[activeIdx] || `Skill_${activeIdx}`
           });
         }
       }
-
-      // Apply subtle scaling, brightness and opacity to each card
-      for (let i = 0; i < cardCount; i++) {
-        let scaleDiff = 0;
-        let brightnessDiff = 0;
-        let opacityDiff = 0;
-
-        for (let j = i + 1; j < cardCount; j++) {
-          const p = progresses[j];
-          if (j === i + 1) {
-            scaleDiff += 0.035 * p;
-            brightnessDiff += 0.05 * p;
-            opacityDiff += 0.08 * p;
-          } else if (j === i + 2) {
-            scaleDiff += 0.025 * p;
-            brightnessDiff += 0.03 * p;
-            opacityDiff += 0.04 * p;
-          } else {
-            scaleDiff += 0.015 * p;
-            brightnessDiff += 0.02 * p;
-            opacityDiff += 0.02 * p;
-          }
-        }
-
-        const scale = Math.max(0.9, 1 - scaleDiff);
-        const brightness = Math.max(0.88, 1 - brightnessDiff);
-        const opacity = Math.max(0.84, 1 - opacityDiff);
-
-        // Smooth GPU transform
-        cards[i].style.transform = `scale(${scale.toFixed(4)})`;
-        cards[i].style.filter = `brightness(${brightness.toFixed(4)})`;
-        cards[i].style.opacity = opacity.toFixed(4);
-      }
     }
+
+    // Click tabs to smoothly scroll to that specific skill
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const idx = parseInt(tab.getAttribute('data-index'), 10);
+        if (isNaN(idx)) return;
+        const rect = track.getBoundingClientRect();
+        const trackHeight = track.offsetHeight;
+        const vh = window.innerHeight;
+        const scrollableDist = trackHeight - vh;
+        const numTransitions = cardCount - 1;
+        const targetProg = idx / numTransitions;
+        const targetScrollY = window.pageYOffset + rect.top - 76 + (targetProg * scrollableDist);
+        window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+      });
+    });
 
     function onScroll() {
       if (!isIntersecting) return;
       if (!ticking) {
-        requestAnimationFrame(updateStackEffect);
+        requestAnimationFrame(updateDeck);
         ticking = true;
       }
     }
 
-    // Optimization: only run scroll calculations when container is in viewport
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           isIntersecting = entry.isIntersecting;
           if (isIntersecting) {
-            updateStackEffect();
+            updateDeck();
           }
         });
-      }, { rootMargin: '200px 0px 200px 0px' });
+      }, { rootMargin: '150px 0px 150px 0px' });
 
-      observer.observe(container);
+      observer.observe(track);
+    } else {
+      isIntersecting = true;
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', () => {
-      requestAnimationFrame(updateStackEffect);
+      requestAnimationFrame(updateDeck);
     }, { passive: true });
 
-    // Initial calculation
-    updateStackEffect();
+    updateDeck();
   }
 
   // ==========================================================================
