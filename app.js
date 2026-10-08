@@ -62,11 +62,13 @@
     initSmoothScrollCTAs();
     initTestimonialCarousel();
     initCountdownTimer();
-    initSoftwareScreensTabs();
+    initSpartaExamSlider();
     initFormCountdownTimer();
     initNumberTicker();
-    initAiSimulator();
     initPricingPackages();
+    initAiProductShowcase();
+    initAiLightbox();
+    initLiveToastNotification();
   });
 
   // ==========================================================================
@@ -291,19 +293,21 @@
     });
 
     // Copy to clipboard helper
-    function copyTextToClipboard(text, btnElem, defaultLabel = 'Sao chép') {
+    function copyTextToClipboard(text, btnElem) {
       if (!btnElem) return;
+      const originalHTML = btnElem.innerHTML;
+      function showSuccess() {
+        btnElem.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="color:#16A34A;font-weight:700;">Đã chép</span>`;
+        setTimeout(() => { btnElem.innerHTML = originalHTML; }, 1800);
+      }
       if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(() => {
-          btnElem.textContent = '✓ Đã chép';
-          setTimeout(() => { btnElem.textContent = defaultLabel; }, 2000);
-        }).catch(() => fallbackCopy(text, btnElem, defaultLabel));
+        navigator.clipboard.writeText(text).then(showSuccess).catch(() => fallbackCopy(text, btnElem, originalHTML));
       } else {
-        fallbackCopy(text, btnElem, defaultLabel);
+        fallbackCopy(text, btnElem, originalHTML);
       }
     }
 
-    function fallbackCopy(text, btnElem, defaultLabel) {
+    function fallbackCopy(text, btnElem, originalHTML) {
       try {
         const tempInput = document.createElement('textarea');
         tempInput.value = text;
@@ -313,11 +317,11 @@
         tempInput.select();
         document.execCommand('copy');
         document.body.removeChild(tempInput);
-        btnElem.textContent = '✓ Đã chép';
-        setTimeout(() => { btnElem.textContent = defaultLabel; }, 2000);
+        btnElem.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="color:#16A34A;font-weight:700;">Đã chép</span>`;
+        setTimeout(() => { btnElem.innerHTML = originalHTML; }, 1800);
       } catch (err) {
-        btnElem.textContent = 'Lỗi';
-        setTimeout(() => { btnElem.textContent = defaultLabel; }, 2000);
+        btnElem.innerHTML = `<span>Lỗi</span>`;
+        setTimeout(() => { btnElem.innerHTML = originalHTML; }, 1800);
       }
     }
 
@@ -342,7 +346,14 @@
       });
     }
 
-    // Close modal
+    // Close modal handlers (Close button, Dismiss X, backdrop click, Escape key)
+    const vietqrModalCloseBtn = document.getElementById('vietqrModalCloseBtn');
+    if (vietqrModalCloseBtn && modalOverlay) {
+      vietqrModalCloseBtn.addEventListener('click', () => {
+        modalOverlay.classList.remove('open');
+      });
+    }
+
     if (modalCloseBtn && modalOverlay) {
       modalCloseBtn.addEventListener('click', () => {
         ConversionTracker.track('vietqr_confirm_paid');
@@ -351,6 +362,12 @@
 
       modalOverlay.addEventListener('click', (e) => {
         if (e.target === modalOverlay) {
+          modalOverlay.classList.remove('open');
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalOverlay.classList.contains('open')) {
           modalOverlay.classList.remove('open');
         }
       });
@@ -515,127 +532,28 @@
   }
 
   // ==========================================================================
-  // 7. TESTIMONIALS CAROUSEL SLIDER (PREV / NEXT NAVIGATION)
+  // 7. TESTIMONIALS 2-ROW MARQUEE (TOUCH PAUSE / RESUME SUPPORT)
   // ==========================================================================
   function initTestimonialCarousel() {
-    const trackWrapper = document.getElementById('testimonialsTrackWrapper');
-    const prevBtn = document.getElementById('testiPrevBtn');
-    const nextBtn = document.getElementById('testiNextBtn');
-    const dotsContainer = document.getElementById('testiCarouselDots');
+    const marqueeContainer = document.getElementById('testiMarqueeContainer');
+    if (!marqueeContainer) return;
 
-    if (!trackWrapper) return;
+    const rows = marqueeContainer.querySelectorAll('.testi-marquee-row');
+    rows.forEach((row) => {
+      const track = row.querySelector('.testi-marquee-track');
+      if (!track) return;
 
-    const cards = trackWrapper.querySelectorAll('.testimonial-card-clean');
-    if (!cards.length) return;
+      // Hỗ trợ chạm giữ trên thiết bị di động để người dùng đọc review
+      row.addEventListener('touchstart', () => {
+        track.style.animationPlayState = 'paused';
+      }, { passive: true });
 
-    let currentIndex = 0;
-    let autoPlayInterval = null;
-    let isUserInteracting = false;
-
-    function getCardStep() {
-      const firstCard = cards[0];
-      const track = trackWrapper.querySelector('.testimonials-track');
-      let gap = 24;
-      if (track) {
-        const computed = window.getComputedStyle(track);
-        gap = parseFloat(computed.gap) || 24;
-      }
-      return (firstCard ? firstCard.offsetWidth : 350) + gap;
-    }
-
-    function scrollToCard(index) {
-      currentIndex = Math.max(0, Math.min(index, cards.length - 1));
-      const step = getCardStep();
-      trackWrapper.scrollTo({
-        left: currentIndex * step,
-        behavior: 'smooth'
-      });
-      updateActiveDot();
-    }
-
-    function updateActiveDot() {
-      if (!dotsContainer) return;
-      const dots = dotsContainer.querySelectorAll('.testi-dot');
-      const step = getCardStep();
-      if (step <= 0) return;
-      const activeIndex = Math.min(Math.round(trackWrapper.scrollLeft / step), cards.length - 1);
-      currentIndex = Math.max(0, activeIndex);
-
-      dots.forEach((dot, idx) => {
-        dot.classList.toggle('active', idx === currentIndex);
-      });
-    }
-
-    // Build dots
-    if (dotsContainer) {
-      dotsContainer.innerHTML = '';
-      cards.forEach((_, idx) => {
-        const dot = document.createElement('button');
-        dot.className = `testi-dot ${idx === 0 ? 'active' : ''}`;
-        dot.type = 'button';
-        dot.setAttribute('aria-label', `Đi tới đánh giá ${idx + 1}`);
-        dot.addEventListener('click', () => {
-          scrollToCard(idx);
-          pauseAutoPlayTemporarily();
-        });
-        dotsContainer.appendChild(dot);
-      });
-    }
-
-    if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        const target = currentIndex <= 0 ? cards.length - 1 : currentIndex - 1;
-        scrollToCard(target);
-        pauseAutoPlayTemporarily();
-      });
-    }
-
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        const target = (currentIndex + 1) % cards.length;
-        scrollToCard(target);
-        pauseAutoPlayTemporarily();
-      });
-    }
-
-    let scrollTimeout;
-    trackWrapper.addEventListener('scroll', () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(updateActiveDot, 60);
-    }, { passive: true });
-
-    // Clean auto-advance every 6s without continuous drifting
-    function startAutoPlay() {
-      stopAutoPlay();
-      autoPlayInterval = setInterval(() => {
-        if (!isUserInteracting) {
-          const nextIndex = (currentIndex + 1) % cards.length;
-          scrollToCard(nextIndex);
-        }
-      }, 6000);
-    }
-
-    function stopAutoPlay() {
-      if (autoPlayInterval) clearInterval(autoPlayInterval);
-    }
-
-    function pauseAutoPlayTemporarily() {
-      isUserInteracting = true;
-      stopAutoPlay();
-      setTimeout(() => {
-        isUserInteracting = false;
-        startAutoPlay();
-      }, 5000);
-    }
-
-    trackWrapper.addEventListener('mouseenter', () => { isUserInteracting = true; });
-    trackWrapper.addEventListener('mouseleave', () => { isUserInteracting = false; });
-    trackWrapper.addEventListener('touchstart', () => { isUserInteracting = true; }, { passive: true });
-    trackWrapper.addEventListener('touchend', () => {
-      setTimeout(() => { isUserInteracting = false; }, 3000);
-    }, { passive: true });
-
-    startAutoPlay();
+      row.addEventListener('touchend', () => {
+        setTimeout(() => {
+          track.style.animationPlayState = 'running';
+        }, 1200);
+      }, { passive: true });
+    });
   }
 
   // ==========================================================================
@@ -665,30 +583,155 @@
   }
 
   // ==========================================================================
-  // 9. SOFTWARE SCREENSHOT TABS (LISTENING & WRITING REAL UI)
+  // 9. SPARTA DAYLIGHT EXAM SLIDER (1 SESSION TRƯỢT LƯỚT 4 KỸ NĂNG)
   // ==========================================================================
-  function initSoftwareScreensTabs() {
-    const tabButtons = document.querySelectorAll('.software-tab-btn');
-    const slides = document.querySelectorAll('.software-img-slide');
+  function initSpartaExamSlider() {
+    const stage = document.getElementById('spartaSliderStage');
+    const track = document.getElementById('spartaSliderTrack');
+    const tabs = document.querySelectorAll('.slider-nav-tab');
+    const slides = document.querySelectorAll('.sparta-slide-card');
+    const prevBtn = document.getElementById('sliderPrevBtn');
+    const nextBtn = document.getElementById('sliderNextBtn');
+    const counterEl = document.getElementById('sliderCounter');
 
-    if (!tabButtons.length || !slides.length) return;
+    if (!stage || !track || !slides.length) return;
 
-    tabButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        if (!targetId) return;
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+    let isWheeling = false;
+    let wheelTimeout = null;
 
-        tabButtons.forEach(b => b.classList.remove('active'));
-        slides.forEach(s => s.classList.remove('active'));
+    function goToSlide(index, trackEvent = true) {
+      if (index < 0) index = 0;
+      if (index >= totalSlides) index = totalSlides - 1;
+      currentIndex = index;
 
-        btn.classList.add('active');
-        const targetSlide = document.getElementById(targetId);
-        if (targetSlide) {
-          targetSlide.classList.add('active');
-          ConversionTracker.track('software_tab_click', { tab: targetId });
+      // Đảm bảo track luôn ở vị trí trung tâm để slide active hiển thị trọn vẹn
+      if (track) {
+        track.style.transform = 'none';
+      }
+
+      // Cập nhật tabs
+      tabs.forEach((tab, i) => {
+        const isActive = i === currentIndex;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      // Cập nhật slides
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentIndex);
+      });
+
+      // Cập nhật counter & nút
+      if (counterEl) {
+        counterEl.textContent = `0${currentIndex + 1} / 0${totalSlides}`;
+      }
+      if (prevBtn) {
+        prevBtn.disabled = (currentIndex === 0);
+      }
+      if (nextBtn) {
+        nextBtn.disabled = (currentIndex === totalSlides - 1);
+      }
+
+      if (trackEvent && window.ConversionTracker) {
+        const skillNames = ['Listening', 'Reading', 'Writing', 'Speaking'];
+        ConversionTracker.track('sparta_slider_change', {
+          index: currentIndex,
+          skill: skillNames[currentIndex] || `Skill_${currentIndex}`
+        });
+      }
+    }
+
+    // Click tabs để nhảy trực tiếp
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const idx = parseInt(tab.getAttribute('data-index'), 10);
+        if (!isNaN(idx)) {
+          goToSlide(idx);
         }
       });
     });
+
+    // Nút điều khiển Trước / Sau
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) goToSlide(currentIndex - 1);
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        if (currentIndex < totalSlides - 1) goToSlide(currentIndex + 1);
+      });
+    }
+
+    // Cuộn chuột đổi kỹ năng (Debounced Mouse Wheel)
+    stage.addEventListener('wheel', (e) => {
+      // Chỉ can thiệp cuộn chuột ngang hoặc cuộn dọc khi người dùng đang focus trong stage
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        if (e.deltaY > 25) {
+          if (currentIndex < totalSlides - 1) {
+            e.preventDefault();
+            if (isWheeling) return;
+            isWheeling = true;
+            goToSlide(currentIndex + 1);
+            clearTimeout(wheelTimeout);
+            wheelTimeout = setTimeout(() => { isWheeling = false; }, 400);
+          }
+          // Nếu đã ở slide cuối, cuộn chuột tự nhiên tiếp tục xuống Section 3
+        } else if (e.deltaY < -25) {
+          if (currentIndex > 0) {
+            e.preventDefault();
+            if (isWheeling) return;
+            isWheeling = true;
+            goToSlide(currentIndex - 1);
+            clearTimeout(wheelTimeout);
+            wheelTimeout = setTimeout(() => { isWheeling = false; }, 400);
+          }
+          // Nếu đã ở slide đầu, cuộn chuột tự nhiên lên Hero
+        }
+      }
+    }, { passive: false });
+
+    // Touch Swipe Support (Vuốt lướt trên Mobile / Tablet)
+    let startX = 0;
+    let startY = 0;
+    let diffX = 0;
+    let isHorizontal = false;
+
+    stage.addEventListener('touchstart', (e) => {
+      if (!e.touches || !e.touches[0]) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      diffX = 0;
+      isHorizontal = false;
+    }, { passive: true });
+
+    stage.addEventListener('touchmove', (e) => {
+      if (!e.touches || !e.touches[0]) return;
+      diffX = e.touches[0].clientX - startX;
+      const diffY = e.touches[0].clientY - startY;
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 12) {
+        isHorizontal = true;
+      }
+    }, { passive: true });
+
+    stage.addEventListener('touchend', () => {
+      if (isHorizontal && Math.abs(diffX) > 35) {
+        if (diffX < 0 && currentIndex < totalSlides - 1) {
+          // Vuốt sang trái -> xem kỹ năng kế tiếp
+          goToSlide(currentIndex + 1);
+        } else if (diffX > 0 && currentIndex > 0) {
+          // Vuốt sang phải -> quay lại kỹ năng trước
+          goToSlide(currentIndex - 1);
+        }
+      }
+      diffX = 0;
+      isHorizontal = false;
+    });
+
+    // Khởi tạo slide đầu tiên
+    goToSlide(0, false);
   }
 
   // ==========================================================================
@@ -726,22 +769,20 @@
         localStorage.setItem(COUNTDOWN_KEY, endTime.toString());
       }
 
-      const d = Math.floor(remaining / 86400);
-      const h = Math.floor((remaining % 86400) / 3600);
+      const h = Math.floor(remaining / 3600);
       const m = Math.floor((remaining % 3600) / 60);
       const s = remaining % 60;
 
-      const dStr = String(d).padStart(2, '0');
       const hStr = String(h).padStart(2, '0');
       const mStr = String(m).padStart(2, '0');
       const sStr = String(s).padStart(2, '0');
 
-      if (daysEl) daysEl.textContent = dStr;
+      if (daysEl) daysEl.textContent = '00';
       if (hoursEl) hoursEl.textContent = hStr;
       if (minsEl) minsEl.textContent = mStr;
       if (secsEl) secsEl.textContent = sStr;
 
-      if (finalDaysEl) finalDaysEl.textContent = dStr;
+      if (finalDaysEl) finalDaysEl.textContent = '00';
       if (finalHoursEl) finalHoursEl.textContent = hStr;
       if (finalMinsEl) finalMinsEl.textContent = mStr;
       if (finalSecsEl) finalSecsEl.textContent = sStr;
@@ -762,10 +803,8 @@
     const sections = [
       { id: 'productExperienceSection', linkSelector: 'a[href="#productExperienceSection"]' },
       { id: 'aiScoringSection', linkSelector: 'a[href="#aiScoringSection"]' },
-      { id: 'comparisonSection', linkSelector: 'a[href="#comparisonSection"]' },
       { id: 'pricingSection', linkSelector: 'a[href="#pricingSection"]' },
-      { id: 'testimonialsSection', linkSelector: 'a[href="#testimonialsSection"]' },
-      { id: 'faqSection', linkSelector: 'a[href="#faqSection"]' }
+      { id: 'testimonialsSection', linkSelector: 'a[href="#testimonialsSection"]' }
     ];
 
     // Sticky Shadow on Scroll
@@ -923,61 +962,167 @@
   }
 
   // ==========================================================================
-  // 13. SHADCN CRO: AI LAB LIVE SCANNER SIMULATION
+  // 13. AI SCORING 2-COLUMN SAAS PRODUCT SHOWCASE (PREV/NEXT BUTTONS & DRAG/SWIPE)
   // ==========================================================================
-  function initAiSimulator() {
-    const triggerBtn = document.getElementById('simulateAiBtn');
-    const writingBeam = document.getElementById('writingScannerBeam');
-    const speakingBeam = document.getElementById('speakingScannerBeam');
-    const statusText = document.getElementById('aiSimStatus');
-    const btnText = document.getElementById('simulateAiBtnText');
+  let aiDemoSuppressClick = false;
 
-    if (!triggerBtn) return;
+  function initAiProductShowcase() {
+    const tabBtns = document.querySelectorAll('.ai-demo-tab-btn');
+    const panes = document.querySelectorAll('.ai-demo-pane');
+    const demoCard = document.getElementById('aiDemoShowcaseCard');
+    const cardBody = document.getElementById('aiDemoCardBody');
+    const prevBtn = document.getElementById('aiDemoPrevBtn');
+    const nextBtn = document.getElementById('aiDemoNextBtn');
+    const focusBtn = document.getElementById('aiDemoFocusBtn');
 
-    let isScanning = false;
+    if (!tabBtns.length || !cardBody) return;
 
-    triggerBtn.addEventListener('click', () => {
-      if (isScanning) return;
-      isScanning = true;
+    let currentSkill = 'writing';
 
-      ConversionTracker.track('ai_simulation_demo_click', { action: 'scan_sample' });
+    function switchSkill(targetSkill, direction = 'right') {
+      if (targetSkill === currentSkill) return;
+      currentSkill = targetSkill;
 
-      // Visual state: active
-      triggerBtn.disabled = true;
-      triggerBtn.style.opacity = '0.85';
-      if (btnText) btnText.textContent = 'Đang quét phân tích bài...';
-      if (statusText) {
-        statusText.innerHTML = '<span class="ai-pulse-dot" style="background:#FF5A00;box-shadow:0 0 8px #FF5A00;"></span> AI đang duyệt cấu trúc ngữ pháp và phát âm...';
-      }
+      // Update tabs
+      tabBtns.forEach(btn => {
+        const isActive = btn.getAttribute('data-skill') === currentSkill;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
 
-      // Start laser beams
-      if (writingBeam) {
-        writingBeam.classList.remove('active-scan');
-        void writingBeam.offsetWidth; // force reflow
-        writingBeam.classList.add('active-scan');
-      }
-
-      if (speakingBeam) {
-        speakingBeam.classList.remove('active-scan');
-        void speakingBeam.offsetWidth; // force reflow
-        speakingBeam.classList.add('active-scan');
-      }
-
-      // Complete simulation after 2.4s
-      setTimeout(() => {
-        if (writingBeam) writingBeam.classList.remove('active-scan');
-        if (speakingBeam) speakingBeam.classList.remove('active-scan');
-
-        if (statusText) {
-          statusText.innerHTML = '<span class="ai-pulse-dot" style="background:#10B981;box-shadow:0 0 8px #10B981;"></span> <strong>Chấm xong (30s):</strong> Chuẩn 4 tiêu chí khảo thí Cam 19!';
+      // Update panes with direction animation
+      panes.forEach(pane => {
+        const isMatch = pane.getAttribute('data-pane') === currentSkill;
+        pane.classList.remove('slide-from-left', 'slide-from-right');
+        if (isMatch) {
+          pane.classList.add('active');
+          pane.classList.add(direction === 'left' ? 'slide-from-left' : 'slide-from-right');
+        } else {
+          pane.classList.remove('active');
         }
-        if (btnText) btnText.textContent = '✓ Quét thành công (Thử lại)';
+      });
 
-        triggerBtn.disabled = false;
-        triggerBtn.style.opacity = '1';
-        isScanning = false;
-      }, 2400);
+      ConversionTracker.track('ai_showcase_tab_select', { skill: currentSkill, direction });
+    }
+
+    // Tab buttons click
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const skill = btn.getAttribute('data-skill');
+        if (skill) {
+          const dir = skill === 'speaking' ? 'right' : 'left';
+          switchSkill(skill, dir);
+        }
+      });
     });
+
+    // Prev / Next arrow buttons
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const nextTarget = currentSkill === 'writing' ? 'speaking' : 'writing';
+        switchSkill(nextTarget, 'left');
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const nextTarget = currentSkill === 'writing' ? 'speaking' : 'writing';
+        switchSkill(nextTarget, 'right');
+      });
+    }
+
+    // Touch Swipe Support (Kéo vuốt sang 2 bên trên màn hình cảm ứng)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchDiffX = 0;
+    let isTouchHorizontal = false;
+
+    cardBody.addEventListener('touchstart', (e) => {
+      if (!e.touches || !e.touches[0]) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchDiffX = 0;
+      isTouchHorizontal = false;
+    }, { passive: true });
+
+    cardBody.addEventListener('touchmove', (e) => {
+      if (!e.touches || !e.touches[0]) return;
+      touchDiffX = e.touches[0].clientX - touchStartX;
+      const diffY = e.touches[0].clientY - touchStartY;
+      if (Math.abs(touchDiffX) > Math.abs(diffY) && Math.abs(touchDiffX) > 10) {
+        isTouchHorizontal = true;
+      }
+    }, { passive: true });
+
+    cardBody.addEventListener('touchend', () => {
+      if (isTouchHorizontal && Math.abs(touchDiffX) > 35) {
+        aiDemoSuppressClick = true;
+        setTimeout(() => { aiDemoSuppressClick = false; }, 200);
+
+        if (touchDiffX < 0) {
+          // Vuốt sang trái -> chuyển sang speaking
+          switchSkill(currentSkill === 'writing' ? 'speaking' : 'writing', 'right');
+        } else if (touchDiffX > 0) {
+          // Vuốt sang phải -> chuyển sang writing
+          switchSkill(currentSkill === 'speaking' ? 'writing' : 'speaking', 'left');
+        }
+      }
+      touchDiffX = 0;
+      isTouchHorizontal = false;
+    });
+
+    // Mouse Drag Support (Kéo chuột sang 2 bên trên máy tính)
+    let isMouseDown = false;
+    let mouseStartX = 0;
+    let mouseDiffX = 0;
+
+    cardBody.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.ai-demo-nav-btn')) return;
+      isMouseDown = true;
+      mouseStartX = e.clientX;
+      mouseDiffX = 0;
+      cardBody.classList.add('is-dragging');
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isMouseDown) return;
+      mouseDiffX = e.clientX - mouseStartX;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (!isMouseDown) return;
+      isMouseDown = false;
+      cardBody.classList.remove('is-dragging');
+
+      if (Math.abs(mouseDiffX) > 35) {
+        aiDemoSuppressClick = true;
+        setTimeout(() => { aiDemoSuppressClick = false; }, 200);
+
+        if (mouseDiffX < 0) {
+          switchSkill(currentSkill === 'writing' ? 'speaking' : 'writing', 'right');
+        } else if (mouseDiffX > 0) {
+          switchSkill(currentSkill === 'speaking' ? 'writing' : 'speaking', 'left');
+        }
+      }
+      mouseDiffX = 0;
+    });
+
+    // "Xem AI chấm điểm" CTA Button Focus
+    if (focusBtn && demoCard) {
+      focusBtn.addEventListener('click', () => {
+        ConversionTracker.track('ai_showcase_demo_cta_click');
+        demoCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        demoCard.style.transition = 'box-shadow 0.35s ease, transform 0.35s ease';
+        demoCard.style.boxShadow = '0 0 0 4px rgba(255, 90, 0, 0.4), 0 24px 54px rgba(10, 37, 64, 0.16)';
+        demoCard.style.transform = 'scale(1.015)';
+        setTimeout(() => {
+          demoCard.style.boxShadow = '';
+          demoCard.style.transform = '';
+        }, 900);
+      });
+    }
   }
 
 
@@ -1025,5 +1170,111 @@
     });
   }
 
-})();
+  // ==========================================================================
+  // 16. AI SCREENSHOT HIGH-RES LIGHTBOX
+  // ==========================================================================
 
+  function initAiLightbox() {
+    const zoomTriggers = document.querySelectorAll('.ai-zoom-trigger');
+    const lightbox = document.getElementById('aiLightboxModal');
+    const lightboxImg = document.getElementById('aiLightboxImg');
+    const lightboxCaption = document.getElementById('aiLightboxCaption');
+    const closeBtn = document.getElementById('aiLightboxClose');
+
+    if (!lightbox || !lightboxImg) return;
+
+    zoomTriggers.forEach(el => {
+      el.addEventListener('click', () => {
+        if (aiDemoSuppressClick) return;
+        const img = el.querySelector('img') || el;
+        if (img && img.src) {
+          lightboxImg.src = img.src;
+          if (lightboxCaption) {
+            lightboxCaption.textContent = img.alt || 'Ảnh minh họa chấm điểm AI IELTS Sparta';
+          }
+          lightbox.classList.add('active');
+          document.body.style.overflow = 'hidden';
+          ConversionTracker.track('ai_screenshot_zoom_click', { src: img.src });
+        }
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox || e.target.classList.contains('lightbox-backdrop')) {
+        closeLightbox();
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+        closeLightbox();
+      }
+    });
+  }
+
+  // ==========================================================================
+  // 17. LIVE SOCIAL PROOF TOAST (Cứ 10s hiện 1 người đăng ký thành công, lặp 5 người)
+  // ==========================================================================
+  function initLiveToastNotification() {
+    const toast = document.getElementById('liveToastNotification');
+    const toastUser = document.getElementById('liveToastUser');
+    const toastTime = document.getElementById('liveToastTime');
+    const closeBtn = document.getElementById('liveToastClose');
+
+    if (!toast || !toastUser || !toastTime) return;
+
+    // Danh sách 5 người đăng ký thành công xoay vòng
+    const registrations = [
+      { user: 'Phạm Thanh Dung ở Hà Nội', time: '25 giây trước' },
+      { user: 'Nguyễn Hoàng Long ở TP. Hồ Chí Minh', time: '18 giây trước' },
+      { user: 'Trần Thu Uyên ở Đà Nẵng', time: '35 giây trước' },
+      { user: 'Vũ Minh Triết ở Hải Phòng', time: '48 giây trước' },
+      { user: 'Lê Bảo Ngọc ở Cần Thơ', time: '1 phút trước' }
+    ];
+
+    let currentIndex = 0;
+    let isDismissed = false;
+    let cycleInterval = null;
+
+    function triggerToast() {
+      if (isDismissed) return;
+
+      const item = registrations[currentIndex];
+      toastUser.textContent = item.user;
+      toastTime.textContent = item.time;
+
+      // Hiển thị toast
+      toast.classList.add('active');
+
+      // Tự động ẩn sau 4 giây
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 4000);
+
+      // Chuyển sang người tiếp theo trong vòng lặp 5 người
+      currentIndex = (currentIndex + 1) % registrations.length;
+    }
+
+    // Lần đầu tiên xuất hiện sau 3 giây khi vào trang
+    setTimeout(() => {
+      triggerToast();
+      // Cứ đúng mỗi 10 giây lại nhảy 1 thông báo
+      cycleInterval = setInterval(triggerToast, 10000);
+    }, 3000);
+
+    // Nút đóng thủ công nếu người dùng muốn tắt
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        isDismissed = true;
+        toast.classList.remove('active');
+        if (cycleInterval) clearInterval(cycleInterval);
+      });
+    }
+  }
+
+})();
