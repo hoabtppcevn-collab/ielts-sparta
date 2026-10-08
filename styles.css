@@ -1995,6 +1995,14 @@ p {
   color: #071B3D;
   line-height: 1.25;
   letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+/* Subtitle / Description */
+.stacked-card-desc {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: #557295;
   margin-bottom: 18px;
 }
 
@@ -2236,6 +2244,11 @@ p {
   }
   .stacked-card-title {
     font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .stacked-card-desc {
+    font-size: 13.5px;
+    line-height: 1.5;
     margin-bottom: 14px;
   }
   .stacked-card-pills-row {
