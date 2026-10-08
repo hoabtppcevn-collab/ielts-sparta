@@ -1051,7 +1051,7 @@ p {
    High-key Daylight Ambiance with Mascot Robot Background and Left White Fade
    ========================================================================== */
 .lead-hero-section {
-  padding: 56px 0 64px 0;
+  padding: 56px 0 24px 0;
   position: relative;
   overflow: hidden;
   background-color: #F4F8FD;
@@ -1763,16 +1763,20 @@ p {
    ========================================================================== */
 
 .product-experience-section {
-  padding: 40px 0 0;
+  padding: 24px 0 0;
   background: linear-gradient(180deg, #FFFFFF 0%, #EFF6FE 20%, #EFF6FE 85%, #FFFFFF 100%);
   position: relative;
+}
+
+.product-experience-section .section-header {
+  margin-bottom: 20px;
 }
 
 /* Scroll Pin Track: Provides the scroll height for the pinned experience */
 .sparta-scroll-pin-track {
   height: 380vh;
   position: relative;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 /* Sticky Stage pinned in viewport */
@@ -2526,7 +2530,7 @@ p {
    Vibrant Accent Orange (#FF5A00), High-Key Pastel Blue (#EBF4FE / #DCEEFE)
    ========================================================================== */
 .ai-showcase-section {
-  padding: 54px 0 24px;
+  padding: 64px 0 56px;
   background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 65%, #F6FAFE 100%);
   position: relative;
   overflow: hidden;
@@ -2540,7 +2544,7 @@ p {
   grid-template-columns: 1.02fr 1.28fr;
   gap: 48px;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 48px;
 }
 
 /* Left Column */
@@ -2978,7 +2982,7 @@ p {
 /* Responsive adjustments */
 @media (max-width: 991px) {
   .ai-showcase-section {
-    padding: 36px 0 18px;
+    padding: 42px 0 32px;
   }
   .ai-showcase-grid {
     grid-template-columns: 1fr;
@@ -3003,7 +3007,7 @@ p {
 
 @media (max-width: 576px) {
   .ai-showcase-section {
-    padding: 26px 0 14px;
+    padding: 30px 0 20px;
   }
   .ai-showcase-grid {
     gap: 18px;
@@ -4889,7 +4893,7 @@ p {
   }
 
   .lead-hero-section {
-    padding: 30px 0 34px 0 !important;
+    padding: 30px 0 18px 0 !important;
     min-height: auto !important;
   }
 
@@ -5244,7 +5248,7 @@ p {
   }
 
   .lead-hero-section {
-    padding: 20px 0 24px 0 !important;
+    padding: 20px 0 14px 0 !important;
     min-height: auto !important;
   }
 
@@ -5636,7 +5640,7 @@ p {
   background: linear-gradient(135deg, #102B56 0%, #194383 50%, #0F2A56 100%) !important;
   border-top: 1px solid rgba(75, 140, 245, 0.35);
   border-bottom: 1px solid rgba(75, 140, 245, 0.35);
-  padding: 26px 0;
+  padding: 16px 0;
   position: relative;
   z-index: 5;
 }
@@ -5835,7 +5839,7 @@ p {
 
 @media (max-width: 640px) {
   .cro-metrics-strip {
-    padding: 24px 0;
+    padding: 14px 0;
   }
   .cro-metrics-grid {
     grid-template-columns: 1fr;
@@ -6448,7 +6452,7 @@ p {
    SECTION 5 — SPARTA PRICING PACKAGES (High-Key Daylight Studio)
    ========================================================================== */
 .sparta-pricing-section {
-  padding: 24px 0 54px;
+  padding: 50px 0 60px;
   background: linear-gradient(180deg, #F6FAFE 0%, #EEF5FD 35%, #E6F0FC 70%, #FFFFFF 100%);
   position: relative;
   border-top: none !important;
