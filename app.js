@@ -62,7 +62,7 @@
     initSmoothScrollCTAs();
     initTestimonialCarousel();
     initCountdownTimer();
-    initSpartaExamSlider();
+    initStickyStackedCards();
     initFormCountdownTimer();
     initNumberTicker();
     initPricingPackages();
@@ -583,155 +583,139 @@
   }
 
   // ==========================================================================
-  // 9. SPARTA DAYLIGHT EXAM SLIDER (1 SESSION TRƯỢT LƯỚT 4 KỸ NĂNG)
+  // 9. SPARTA STICKY STACKED CARDS (4 KỸ NĂNG IELTS SPARTA — PREP STYLE SCROLL)
   // ==========================================================================
-  function initSpartaExamSlider() {
-    const stage = document.getElementById('spartaSliderStage');
-    const track = document.getElementById('spartaSliderTrack');
-    const tabs = document.querySelectorAll('.slider-nav-tab');
-    const slides = document.querySelectorAll('.sparta-slide-card');
-    const prevBtn = document.getElementById('sliderPrevBtn');
-    const nextBtn = document.getElementById('sliderNextBtn');
-    const counterEl = document.getElementById('sliderCounter');
+  function initStickyStackedCards() {
+    const container = document.getElementById('spartaStackedContainer');
+    const cards = document.querySelectorAll('.sparta-stacked-card');
+    if (!container || !cards.length) return;
 
-    if (!stage || !track || !slides.length) return;
+    const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let ticking = false;
+    let isIntersecting = true;
 
-    let currentIndex = 0;
-    const totalSlides = slides.length;
-    let isWheeling = false;
-    let wheelTimeout = null;
+    // Track active card for analytics without spamming events
+    let currentActiveIdx = -1;
+    const skillNames = ['Listening', 'Reading', 'Writing', 'Speaking'];
 
-    function goToSlide(index, trackEvent = true) {
-      if (index < 0) index = 0;
-      if (index >= totalSlides) index = totalSlides - 1;
-      currentIndex = index;
+    function updateStackEffect() {
+      ticking = false;
 
-      // Đảm bảo track luôn ở vị trí trung tâm để slide active hiển thị trọn vẹn
-      if (track) {
-        track.style.transform = 'none';
-      }
-
-      // Cập nhật tabs
-      tabs.forEach((tab, i) => {
-        const isActive = i === currentIndex;
-        tab.classList.toggle('active', isActive);
-        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      });
-
-      // Cập nhật slides
-      slides.forEach((slide, i) => {
-        slide.classList.toggle('active', i === currentIndex);
-      });
-
-      // Cập nhật counter & nút
-      if (counterEl) {
-        counterEl.textContent = `0${currentIndex + 1} / 0${totalSlides}`;
-      }
-      if (prevBtn) {
-        prevBtn.disabled = (currentIndex === 0);
-      }
-      if (nextBtn) {
-        nextBtn.disabled = (currentIndex === totalSlides - 1);
-      }
-
-      if (trackEvent && window.ConversionTracker) {
-        const skillNames = ['Listening', 'Reading', 'Writing', 'Speaking'];
-        ConversionTracker.track('sparta_slider_change', {
-          index: currentIndex,
-          skill: skillNames[currentIndex] || `Skill_${currentIndex}`
+      // On mobile or when user prefers reduced motion, reset transforms for natural scrolling
+      if (isReducedMotion || window.innerWidth <= 768) {
+        cards.forEach(card => {
+          card.style.transform = '';
+          card.style.filter = '';
+          card.style.opacity = '';
         });
+        return;
+      }
+
+      const stackBase = 96;
+      const stackStep = 28;
+      const cardCount = cards.length;
+
+      // Calculate overlap progress for each subsequent card (from index 1 to cardCount - 1)
+      const progresses = new Array(cardCount).fill(0);
+      for (let j = 1; j < cardCount; j++) {
+        const targetStickyTop = stackBase + j * stackStep;
+        const prevCard = cards[j - 1];
+        const prevHeight = prevCard.offsetHeight || 480;
+        // The scroll travel distance over which previous card scales down as card j scrolls up
+        const transitionDist = prevHeight * 0.75;
+        const rect = cards[j].getBoundingClientRect();
+        const currentTop = rect.top;
+
+        if (currentTop <= targetStickyTop) {
+          progresses[j] = 1;
+        } else if (currentTop >= targetStickyTop + transitionDist) {
+          progresses[j] = 0;
+        } else {
+          progresses[j] = (targetStickyTop + transitionDist - currentTop) / transitionDist;
+        }
+      }
+
+      // Determine current dominant / active card for conversion tracking
+      let activeIndex = 0;
+      for (let k = 1; k < cardCount; k++) {
+        if (progresses[k] >= 0.5) {
+          activeIndex = k;
+        }
+      }
+
+      if (activeIndex !== currentActiveIdx) {
+        currentActiveIdx = activeIndex;
+        if (window.ConversionTracker) {
+          ConversionTracker.track('sparta_stacked_card_view', {
+            index: activeIndex,
+            skill: skillNames[activeIndex] || `Skill_${activeIndex}`
+          });
+        }
+      }
+
+      // Apply subtle scaling, brightness and opacity to each card
+      for (let i = 0; i < cardCount; i++) {
+        let scaleDiff = 0;
+        let brightnessDiff = 0;
+        let opacityDiff = 0;
+
+        for (let j = i + 1; j < cardCount; j++) {
+          const p = progresses[j];
+          if (j === i + 1) {
+            scaleDiff += 0.035 * p;
+            brightnessDiff += 0.05 * p;
+            opacityDiff += 0.08 * p;
+          } else if (j === i + 2) {
+            scaleDiff += 0.025 * p;
+            brightnessDiff += 0.03 * p;
+            opacityDiff += 0.04 * p;
+          } else {
+            scaleDiff += 0.015 * p;
+            brightnessDiff += 0.02 * p;
+            opacityDiff += 0.02 * p;
+          }
+        }
+
+        const scale = Math.max(0.9, 1 - scaleDiff);
+        const brightness = Math.max(0.88, 1 - brightnessDiff);
+        const opacity = Math.max(0.84, 1 - opacityDiff);
+
+        // Smooth GPU transform
+        cards[i].style.transform = `scale(${scale.toFixed(4)})`;
+        cards[i].style.filter = `brightness(${brightness.toFixed(4)})`;
+        cards[i].style.opacity = opacity.toFixed(4);
       }
     }
 
-    // Click tabs để nhảy trực tiếp
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        const idx = parseInt(tab.getAttribute('data-index'), 10);
-        if (!isNaN(idx)) {
-          goToSlide(idx);
-        }
-      });
-    });
-
-    // Nút điều khiển Trước / Sau
-    if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) goToSlide(currentIndex - 1);
-      });
-    }
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        if (currentIndex < totalSlides - 1) goToSlide(currentIndex + 1);
-      });
-    }
-
-    // Cuộn chuột đổi kỹ năng (Debounced Mouse Wheel)
-    stage.addEventListener('wheel', (e) => {
-      // Chỉ can thiệp cuộn chuột ngang hoặc cuộn dọc khi người dùng đang focus trong stage
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        if (e.deltaY > 25) {
-          if (currentIndex < totalSlides - 1) {
-            e.preventDefault();
-            if (isWheeling) return;
-            isWheeling = true;
-            goToSlide(currentIndex + 1);
-            clearTimeout(wheelTimeout);
-            wheelTimeout = setTimeout(() => { isWheeling = false; }, 400);
-          }
-          // Nếu đã ở slide cuối, cuộn chuột tự nhiên tiếp tục xuống Section 3
-        } else if (e.deltaY < -25) {
-          if (currentIndex > 0) {
-            e.preventDefault();
-            if (isWheeling) return;
-            isWheeling = true;
-            goToSlide(currentIndex - 1);
-            clearTimeout(wheelTimeout);
-            wheelTimeout = setTimeout(() => { isWheeling = false; }, 400);
-          }
-          // Nếu đã ở slide đầu, cuộn chuột tự nhiên lên Hero
-        }
+    function onScroll() {
+      if (!isIntersecting) return;
+      if (!ticking) {
+        requestAnimationFrame(updateStackEffect);
+        ticking = true;
       }
-    }, { passive: false });
+    }
 
-    // Touch Swipe Support (Vuốt lướt trên Mobile / Tablet)
-    let startX = 0;
-    let startY = 0;
-    let diffX = 0;
-    let isHorizontal = false;
+    // Optimization: only run scroll calculations when container is in viewport
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          isIntersecting = entry.isIntersecting;
+          if (isIntersecting) {
+            updateStackEffect();
+          }
+        });
+      }, { rootMargin: '200px 0px 200px 0px' });
 
-    stage.addEventListener('touchstart', (e) => {
-      if (!e.touches || !e.touches[0]) return;
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      diffX = 0;
-      isHorizontal = false;
+      observer.observe(container);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => {
+      requestAnimationFrame(updateStackEffect);
     }, { passive: true });
 
-    stage.addEventListener('touchmove', (e) => {
-      if (!e.touches || !e.touches[0]) return;
-      diffX = e.touches[0].clientX - startX;
-      const diffY = e.touches[0].clientY - startY;
-      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 12) {
-        isHorizontal = true;
-      }
-    }, { passive: true });
-
-    stage.addEventListener('touchend', () => {
-      if (isHorizontal && Math.abs(diffX) > 35) {
-        if (diffX < 0 && currentIndex < totalSlides - 1) {
-          // Vuốt sang trái -> xem kỹ năng kế tiếp
-          goToSlide(currentIndex + 1);
-        } else if (diffX > 0 && currentIndex > 0) {
-          // Vuốt sang phải -> quay lại kỹ năng trước
-          goToSlide(currentIndex - 1);
-        }
-      }
-      diffX = 0;
-      isHorizontal = false;
-    });
-
-    // Khởi tạo slide đầu tiên
-    goToSlide(0, false);
+    // Initial calculation
+    updateStackEffect();
   }
 
   // ==========================================================================
