@@ -1763,13 +1763,13 @@ p {
    ========================================================================== */
 
 .product-experience-section {
-  padding: 24px 0 0;
+  padding: 58px 0 0;
   background: linear-gradient(180deg, #FFFFFF 0%, #EFF6FE 20%, #EFF6FE 85%, #FFFFFF 100%);
   position: relative;
 }
 
 .product-experience-section .section-header {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 /* Scroll Pin Track: Provides the scroll height for the pinned experience */
@@ -5640,7 +5640,7 @@ p {
   background: linear-gradient(135deg, #102B56 0%, #194383 50%, #0F2A56 100%) !important;
   border-top: 1px solid rgba(75, 140, 245, 0.35);
   border-bottom: 1px solid rgba(75, 140, 245, 0.35);
-  padding: 16px 0;
+  padding: 28px 0;
   position: relative;
   z-index: 5;
 }
@@ -5839,7 +5839,7 @@ p {
 
 @media (max-width: 640px) {
   .cro-metrics-strip {
-    padding: 14px 0;
+    padding: 20px 0;
   }
   .cro-metrics-grid {
     grid-template-columns: 1fr;
