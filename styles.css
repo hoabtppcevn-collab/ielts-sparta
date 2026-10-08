@@ -1679,21 +1679,24 @@ p {
 }
 
 .form-control.error {
-  border-color: #EF4444;
-  background: #FFF5F5;
+  border-color: var(--color-cool-gray-border);
+  background: #FFFFFF;
 }
 
 .field-error-msg {
   font-size: 12px;
-  color: #DC2626;
-  background: #FEE2E2;
-  padding: 3px 8px;
-  border-radius: 4px;
+  color: #EF4444;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  margin-top: 4px;
   display: none;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .field-error-msg.visible {
-  display: inline-block;
+  display: block;
 }
 
 .form-btn-submit {
